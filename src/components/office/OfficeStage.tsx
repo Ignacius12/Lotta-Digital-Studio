@@ -81,8 +81,8 @@ export function OfficeStage() {
       onPointerLeave={() => stage.current?.setPointer(0, 0)}
     >
       <p className="sr-only">
-        Oficina en vista alta, sin fondo. Hay personas trabajando en las mesas. El texto de la página
-        está fuera de esta animación.
+        Oficina vista desde arriba, sin fondo. Hay personas trabajando en las mesas. El texto de la
+        página está fuera de esta animación.
       </p>
       {failed && (
         <div className="absolute inset-0 grid place-items-center px-6 text-center text-sm text-white/70">

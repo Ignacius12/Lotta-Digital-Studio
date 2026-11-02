@@ -5,12 +5,12 @@ import { OfficeStage } from '../components/office/OfficeStage'
 import { useInView } from '../hooks/useInView'
 
 const mail = 'lotta.digital.studio@gmail.com'
-const mailto = `mailto:${mail}?subject=${encodeURIComponent('Auditoría de la web')}`
+const mailto = `mailto:${mail}?subject=${encodeURIComponent('Consulta sobre mi web')}`
 
 const shell = 'mx-auto w-full max-w-[1760px] px-4 sm:px-6 lg:px-8 xl:px-10'
 
 const nav = [
-  { href: '#recorrido', label: 'Recorrido' },
+  { href: '#recorrido', label: 'Proceso' },
   { href: '#servicios', label: 'Servicios' },
   { href: '#ejemplos', label: 'Ejemplos' },
   { href: '#contacto', label: 'Contacto' },
@@ -18,25 +18,25 @@ const nav = [
 
 const beats = [
   { n: '01', title: 'Te entienden', text: 'Qué haces y para quién, en la primera pantalla.' },
-  { n: '02', title: 'Siguen un camino', text: 'De esa frase al contacto, sin distracciones.' },
-  { n: '03', title: 'Te escriben', text: 'El email está a la vista y se entiende qué pasa al pulsarlo.' },
+  { n: '02', title: 'No se pierden', text: 'Cada bloque lleva al siguiente, hasta el correo.' },
+  { n: '03', title: 'Te escriben', text: 'El correo está a la vista y se entiende qué pasa al pulsarlo.' },
 ]
 
-const outcomes = [
+const starts = [
   {
     n: '01',
-    title: 'La primera pantalla decide',
-    text: 'Si hace falta un párrafo para saber qué vendes, el visitante se va antes de bajar.',
+    title: 'La web ya existe y no se entiende',
+    text: 'Puede estar bien diseñada y, aun así, no decir qué vendes. La auditoría marca dónde se pierde el mensaje y qué conviene cambiar primero.',
   },
   {
     n: '02',
-    title: 'Un camino, no un menú de dudas',
-    text: 'Cada bloque empuja al siguiente. Nada compite con la acción que te interesa.',
+    title: 'Todavía no hay web',
+    text: 'El negocio ya funciona y la página no existe. Definimos qué tiene que decir la primera pantalla y la construimos desde ahí.',
   },
   {
     n: '03',
-    title: 'El email no se esconde',
-    text: 'Quien ya está convencido encuentra dónde escribir sin rebuscar en el pie.',
+    title: 'Hay visitas y no hay correos',
+    text: 'La gente entra y no escribe. Casi siempre el camino se corta o el correo está escondido. Lo dejamos claro y a la vista.',
   },
 ]
 
@@ -48,18 +48,18 @@ const steps = [
   },
   {
     number: '02',
-    title: 'Auditamos el recorrido',
-    text: 'Si ya hay web, la cruzamos como un cliente con prisa. Si no existe, definimos el hueco que tiene que ocupar.',
+    title: 'Leemos la web como un cliente',
+    text: 'Si ya existe, la recorremos con prisa, como quien no te conoce. Si no existe, definimos qué tiene que contar desde el primer día.',
   },
   {
     number: '03',
-    title: 'Diseñamos y construimos',
-    text: 'Mensaje, páginas y botón en una sola historia. El diseño sostiene esa historia, no la sustituye.',
+    title: 'La escribimos y la diseñamos',
+    text: 'El texto, las páginas y el botón cuentan la misma historia. El diseño la hace fácil de leer, no la sustituye.',
   },
   {
     number: '04',
     title: 'La publicamos',
-    text: 'Queda online, es tuya y se puede ver qué hacen las visitas después de entrar.',
+    text: 'Queda en internet, es tuya y puedes comprobar si las visitas llegan al correo.',
   },
 ]
 
@@ -68,22 +68,22 @@ const services = [
     number: '01',
     name: 'Auditoría',
     title: 'Ver la web con los ojos de quien compra.',
-    body: 'Señalamos dónde se pierde el mensaje, dónde sobra ruido y qué impide que te escriban.',
+    body: 'Cuando la página ya existe y algo no funciona: el mensaje, el camino o el correo. Señalamos dónde se pierde y qué impide que te escriban.',
     points: [
-      'Recorrido real, de la entrada al email',
-      'Mensaje, jerarquía y puntos de fricción',
-      'Informe corto, en orden de prioridad',
+      'De la entrada al correo, como lo haría un cliente',
+      'Qué se entiende, qué sobra y qué frena',
+      'Un informe breve, por orden de urgencia',
     ],
   },
   {
     number: '02',
     name: 'Creación',
-    title: 'La web que tu empresa puede defender.',
-    body: 'La construimos de cero o desde lo que la auditoría ha dejado claro. Una dirección visual propia, no una plantilla con el logo cambiado.',
+    title: 'La web que explica tu empresa sin ti.',
+    body: 'Cuando hay que hacerla: de cero, o a partir de lo que la auditoría ha dejado claro. Una dirección visual propia, no una plantilla con el logo cambiado.',
     points: [
       'Textos que se entienden a la primera',
       'Diseño a medida, con carácter propio',
-      'Web publicada y lista para medir',
+      'Publicada, con el correo a la vista',
     ],
   },
 ]
@@ -93,7 +93,7 @@ const examples = [
     to: '/restaurante',
     label: 'Restaurante',
     name: 'Casa Oliva',
-    description: 'Cena para compartir: producto, mesa larga y reserva a la vista.',
+    description: 'Cena para compartir: producto de temporada y la reserva a la vista.',
     image:
       'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80&auto=format&fit=crop',
     imageAlt: 'Mesa de restaurante con platos mediterráneos',
@@ -102,7 +102,7 @@ const examples = [
     to: '/clinica',
     label: 'Clínica dental',
     name: 'Clínica Alba',
-    description: 'Primera visita sin sorpresas: calma, claridad y una cita fácil.',
+    description: 'La primera visita, explicada con calma, y una cita fácil de pedir.',
     image:
       'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1400&q=80&auto=format&fit=crop',
     imageAlt: 'Recepción luminosa de clínica dental moderna',
@@ -111,7 +111,7 @@ const examples = [
     to: '/horno',
     label: 'Horno',
     name: 'Horno La Espiga',
-    description: 'La compra de la mañana: pan, bollería y encargos del domingo.',
+    description: 'La compra de la mañana: pan del día, bollería y encargos del domingo.',
     image:
       'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1400&q=80&auto=format&fit=crop',
     imageAlt: 'Panes artesanos recién horneados',
@@ -120,7 +120,7 @@ const examples = [
     to: '/pub',
     label: 'Pub',
     name: 'El Candil',
-    description: 'Quedar con amigos: cañas, ambiente y mesas de grupo.',
+    description: 'Quedar con amigos: cañas, ambiente y sitio para un grupo.',
     image:
       'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1400&q=80&auto=format&fit=crop',
     imageAlt: 'Interior cálido de pub con barra de madera',
@@ -130,9 +130,9 @@ const examples = [
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
-  name: 'Lotta Digital Studio',
+  name: 'Lotta',
   description:
-    'Estudio en Valencia de auditoría y creación de webs para empresas.',
+    'Estudio digital en Valencia. Audita cómo se lee una empresa en la web y, si hace falta, hace la página para que la entiendan y escriban.',
   url: 'https://ignacius12.github.io/PruebaWeb/',
   email: mail,
   areaServed: 'ES',
@@ -182,7 +182,7 @@ function TalkLink({ className = '' }: { className?: string }) {
       href="#contacto"
       className={`inline-flex h-12 items-center justify-center gap-2 rounded-none bg-white px-5 text-base font-semibold whitespace-nowrap text-lotta-ink transition duration-300 hover:-translate-y-0.5 hover:bg-lotta-glow sm:h-[3.75rem] sm:px-8 sm:text-lg ${className}`}
     >
-      Hablemos
+      Escríbenos
       <ArrowRight size={18} aria-hidden="true" />
     </a>
   )
@@ -216,7 +216,7 @@ function StudioHeader() {
             Lotta
           </span>
           <span className="hidden text-xs font-medium tracking-[0.14em] text-white/55 uppercase lg:inline">
-            Digital Studio · Valencia
+            Estudio digital · Valencia
           </span>
         </a>
 
@@ -268,7 +268,7 @@ function StudioHeader() {
             onClick={close}
             className="mt-8 inline-flex h-14 items-center justify-center rounded-none bg-white text-base font-semibold text-lotta-ink"
           >
-            Hablemos
+            Escríbenos
           </a>
         </nav>
       )}
@@ -329,11 +329,11 @@ function Hero() {
             className="font-lotta mt-5 text-[clamp(2.7rem,3.5vw,4.25rem)] leading-[1.05] font-bold tracking-[-0.03em]"
           >
             Una web clara
-            <span className="mt-1 block text-lotta-glow">vende antes de la llamada.</span>
+            <span className="mt-1 block text-lotta-glow">explica el negocio sola.</span>
           </h1>
           <p className="mt-6 max-w-xl text-base text-white/72 sm:text-lg">
-            Auditamos cómo te leen tus clientes y creamos la web que lo deja resuelto. El orden es
-            siempre el mismo: primero te entienden, después avanzan, al final te escriben.
+            Auditamos cómo te leen y, si hace falta, hacemos la web. Quien entra tiene que entender
+            qué ofreces, seguir sin perderse y escribirte. Siempre en ese orden.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <TalkLink />
@@ -428,7 +428,7 @@ function ScrollProgress() {
 
 export function Hub() {
   useEffect(() => {
-    document.title = 'Lotta Digital Studio | Auditoría y creación web'
+    document.title = 'Lotta, estudio digital en Valencia'
   }, [])
 
   return (
@@ -443,7 +443,7 @@ export function Hub() {
       <main id="contenido">
         <Hero />
 
-        <section aria-label="La promesa, en tres pasos" className="border-b border-lotta-line bg-white">
+        <section aria-label="Qué tiene que poder hacer quien entra" className="border-b border-lotta-line bg-white">
           <ol className={`grid sm:grid-cols-3 ${shell}`}>
             {beats.map((beat, index) => (
               <li
@@ -463,9 +463,9 @@ export function Hub() {
 
         <Chapter
           id="recorrido"
-          index="02 — El recorrido"
+          index="01 — El proceso"
           title="De la primera conversación a la web publicada."
-          intro="Cuatro pasos, siempre en este orden. Cada uno deja algo concreto: contexto, diagnóstico, la web y la publicación."
+          intro="Cuatro pasos, siempre en este orden. Cada uno deja algo concreto: lo que nos cuentas, el diagnóstico, la web y la publicación."
         >
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {steps.map((step, index) => (
@@ -485,14 +485,14 @@ export function Hub() {
         </Chapter>
 
         <Chapter
-          id="resultados"
-          index="03 — Lo que queda resuelto"
-          title="Si esto no ocurre, la web no está terminada."
-          intro="No medimos el diseño por cómo se ve en una captura. Lo medimos por si un cliente nuevo puede avanzar solo."
+          id="partida"
+          index="02 — El punto de partida"
+          title="Tres situaciones. Un solo criterio."
+          intro="El encargo depende de cómo esté tu web ahora. El criterio no cambia: que te entiendan y que puedan escribirte."
           tone="white"
         >
           <div className="grid gap-4 lg:grid-cols-3">
-            {outcomes.map((item, index) => (
+            {starts.map((item, index) => (
               <Reveal key={item.n} delay={index * 90}>
                 <article className="h-full rounded-none bg-[#101614] p-6 text-white transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgb(16_22_20/0.18)] sm:p-8">
                   <p className="font-lotta text-4xl font-bold tracking-[-0.02em] text-lotta-glow">
@@ -508,9 +508,9 @@ export function Hub() {
 
         <Chapter
           id="servicios"
-          index="04 — Servicios"
+          index="03 — Servicios"
           title="Dos encargos. Juntos o por separado."
-          intro="Puedes pedir solo el diagnóstico o la web completa. En los dos casos el criterio es el mismo: claridad y un siguiente paso."
+          intro="Puedes pedir solo la auditoría, o también la web. En los dos casos partimos de lo mismo: que te entiendan y que sepan escribirte."
         >
           <div className="grid gap-4 lg:grid-cols-2">
             {services.map((service, index) => (
@@ -542,9 +542,9 @@ export function Hub() {
 
         <Chapter
           id="ejemplos"
-          index="05 — Ejemplos"
-          title="Entra y recorre el criterio."
-          intro="Cuatro webs de ejemplo, cuatro oficios. En todas pasa lo mismo: un mensaje, un camino y una forma clara de seguir. Son demostraciones, no clientes."
+          index="04 — Ejemplos"
+          title="Cuatro oficios. El mismo recorrido."
+          intro="Son demostraciones, no clientes reales. En todas se entiende el negocio al entrar, hay un camino y una forma clara de seguir."
           tone="white"
         >
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -599,25 +599,24 @@ export function Hub() {
                 <div className="lg:col-span-7">
                   <p className="inline-flex items-center gap-3 font-lotta text-2xl font-bold tracking-[0.08em] text-lotta-glow uppercase sm:text-3xl">
                     <MapPin size={22} aria-hidden="true" />
-                    06 — Contacto · Valencia
+                    05 — Contacto · Valencia
                   </p>
                   <h2
                     id="contacto-heading"
                     className="font-lotta mt-4 text-[clamp(2.4rem,4vw,4.2rem)] leading-[1.08] font-bold tracking-[-0.02em]"
                   >
-                    Cuéntanos el negocio por email.
+                    Cuéntanos cómo está tu web.
                   </h2>
-                  <p className="mt-5 text-base text-white/75 sm:text-lg">Envía un email a</p>
+                  <p className="mt-5 max-w-xl text-base text-white/75 sm:text-lg">
+                    Qué vendes, a quién y si ya tienes página. Con eso te decimos si hace falta una
+                    auditoría, hacer la web, o las dos cosas.
+                  </p>
                   <a
                     href={mailto}
-                    className="mt-2 block max-w-full font-lotta text-[clamp(1.15rem,2vw,1.7rem)] leading-snug font-bold break-words text-lotta-glow underline decoration-lotta-glow/40 underline-offset-4"
+                    className="mt-6 block max-w-full font-lotta text-[clamp(1.15rem,2vw,1.7rem)] leading-snug font-bold break-words text-lotta-glow underline decoration-lotta-glow/40 underline-offset-4"
                   >
                     lotta.digital.studio<wbr />@gmail.com
                   </a>
-                  <p className="mt-4 max-w-xl text-base text-white/75 sm:text-lg">
-                    Qué vendes, a quién, y si ya tienes web. Te decimos si toca auditar, crear, o
-                    las dos cosas.
-                  </p>
                 </div>
                 <div className="lg:col-span-5 lg:justify-self-end">
                   <a
@@ -625,7 +624,7 @@ export function Hub() {
                     className="inline-flex h-16 items-center justify-center gap-3 rounded-none bg-white px-8 text-lg font-semibold text-lotta-ink transition duration-300 hover:-translate-y-0.5 hover:bg-lotta-glow"
                   >
                     <Mail size={20} aria-hidden="true" />
-                    Enviar un email
+                    Enviar un correo
                   </a>
                   <p className="mt-4 text-sm text-white/55">Respuesta en un día laborable · Valencia</p>
                 </div>
@@ -643,7 +642,7 @@ export function Hub() {
               <span className="font-lotta text-3xl font-bold tracking-[-0.015em]">Lotta</span>
             </p>
             <p className="mt-3 text-sm text-lotta-muted">
-              Digital Studio · Auditoría y creación web · Valencia
+              Estudio digital · Auditoría y creación de webs · Valencia
             </p>
           </div>
           <nav aria-label="Pie" className="flex flex-wrap gap-x-6 gap-y-2">
