@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ArrowUpRight, Mail, MapPin, Menu, X } from 'lucide-react'
-import { OfficeStage } from '../components/office/OfficeStage'
+import estudio from '../assets/estudio-hero.jpg'
 import { useInView } from '../hooks/useInView'
 
 const mail = 'lotta.digital.studio@gmail.com'
@@ -318,7 +318,7 @@ function Hero() {
         }}
       />
 
-      <div className={`relative grid items-center gap-8 py-12 sm:py-16 lg:grid-cols-2 lg:items-stretch lg:gap-6 lg:py-14 ${shell}`}>
+      <div className={`relative grid items-center gap-8 py-12 sm:py-16 lg:grid-cols-2 lg:gap-10 lg:py-16 ${shell}`}>
         <div className="lotta-rise flex flex-col justify-center">
           <p className="inline-flex items-center gap-2 text-sm font-medium text-lotta-glow">
             <MapPin size={16} aria-hidden="true" />
@@ -345,8 +345,12 @@ function Hero() {
             </a>
           </div>
         </div>
-        <div className="lotta-rise-2 h-full min-h-[300px] lg:min-h-[640px]">
-          <OfficeStage />
+        <div className="lotta-rise-2">
+          <img
+            src={estudio}
+            alt="Reunión en el estudio: se revisa un documento mientras se presenta la web, el vídeo y los resultados."
+            className="h-auto w-full"
+          />
         </div>
       </div>
     </section>
