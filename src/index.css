@@ -2,7 +2,15 @@
 
 @theme {
   --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-lotta: "Source Sans 3", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+
+  --color-lotta-paper: #f2f4f3;
+  --color-lotta-ink: #101614;
+  --color-lotta-muted: #5c6560;
+  --color-lotta-line: #d5ddd8;
+  --color-lotta-signal: #0f766e;
+  --color-lotta-glow: #2dd4bf;
 
   --color-cream: #f5f2eb;
   --color-cream-deep: #ebe6db;
@@ -63,7 +71,7 @@
     background: var(--color-cream);
     color: var(--color-ink);
     padding: 0.65rem 1rem;
-    border-radius: 0.125rem;
+    border-radius: 0;
     font-size: 0.875rem;
     font-weight: 500;
     transition: transform 0.2s ease;
@@ -151,6 +159,20 @@
 
   .theme-pub :focus-visible {
     outline: 2px solid var(--color-pub);
+    outline-offset: 3px;
+  }
+
+  .theme-lotta {
+    font-family: var(--font-lotta);
+  }
+
+  .theme-lotta ::selection {
+    background: var(--color-lotta-signal);
+    color: var(--color-lotta-paper);
+  }
+
+  .theme-lotta :focus-visible {
+    outline: 2px solid var(--color-lotta-glow);
     outline-offset: 3px;
   }
 
@@ -303,6 +325,70 @@
 
 .scroll-hint-icon {
   animation: scroll-hint 1.8s ease-in-out infinite;
+}
+
+@keyframes lotta-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6%, -8%, 0) scale(1.12);
+  }
+}
+
+@keyframes lotta-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lotta-orb {
+  animation: lotta-drift 16s ease-in-out infinite;
+}
+
+.lotta-orb-delayed {
+  animation: lotta-drift 18s ease-in-out infinite reverse;
+}
+
+.lotta-rise {
+  animation: lotta-rise 0.7s ease both;
+}
+
+.lotta-rise-2 {
+  animation: lotta-rise 0.7s ease 0.12s both;
+}
+
+.lotta-rise-3 {
+  animation: lotta-rise 0.7s ease 0.24s both;
+}
+
+.office-canvas {
+  opacity: 0;
+}
+
+.office-canvas.is-ready {
+  opacity: 1;
+  transition: opacity 0.8s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lotta-orb,
+  .lotta-orb-delayed,
+  .lotta-rise,
+  .lotta-rise-2,
+  .lotta-rise-3 {
+    animation: none;
+  }
+
+  .office-canvas.is-ready {
+    transition: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
