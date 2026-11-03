@@ -8,7 +8,6 @@ export type LottaCopy = {
   mailtoSubject: string
   skip: string
   navLabel: string
-  footerNav: string
   openMenu: string
   closeMenu: string
   language: string
@@ -44,7 +43,9 @@ export type LottaCopy = {
   contactTitle: string
   contactBody: string
   contactReply: string
-  footer: string
+  footerRights: string
+  footerOwner: string
+  instagram: string
   jsonDescription: string
   knowsAbout: string[]
 }
@@ -63,7 +64,6 @@ export const copy: Record<Lang, LottaCopy> = {
     mailtoSubject: 'Consulta sobre mi web',
     skip: 'Saltar al contenido',
     navLabel: 'Secciones',
-    footerNav: 'Pie',
     openMenu: 'Abrir menú',
     closeMenu: 'Cerrar menú',
     language: 'Idioma',
@@ -203,7 +203,9 @@ export const copy: Record<Lang, LottaCopy> = {
     contactTitle: 'Cuéntanos cómo está tu web.',
     contactBody: 'Qué vendes, a quién y si ya tienes página. Con eso te decimos qué paquete encaja.',
     contactReply: 'Respuesta en un día laborable · Valencia',
-    footer: 'Estudio digital · Auditoría y creación de webs · Valencia',
+    footerRights: '© 2026 Lotta Digital Studio. Todos los derechos reservados.',
+    footerOwner: 'Esta web es propiedad de Lotta Digital Studio.',
+    instagram: 'Instagram de Lotta Digital Studio (se abre en una pestaña nueva)',
     jsonDescription:
       'Estudio digital en Valencia. Audita cómo se lee una empresa en la web y, si hace falta, hace la página para que la entiendan y escriban.',
     knowsAbout: ['Auditoría web', 'Diseño de experiencia', 'Creación de páginas web'],
@@ -215,7 +217,6 @@ export const copy: Record<Lang, LottaCopy> = {
     mailtoSubject: 'Question about my website',
     skip: 'Skip to content',
     navLabel: 'Sections',
-    footerNav: 'Footer',
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
     language: 'Language',
@@ -355,7 +356,9 @@ export const copy: Record<Lang, LottaCopy> = {
     contactTitle: 'Tell us how your website is.',
     contactBody: 'What you sell, to whom, and whether you already have a page. With that we tell you which package fits.',
     contactReply: 'Reply within one working day · Valencia',
-    footer: 'Digital studio · Website audit and creation · Valencia',
+    footerRights: '© 2026 Lotta Digital Studio. All rights reserved.',
+    footerOwner: 'This website is the property of Lotta Digital Studio.',
+    instagram: 'Lotta Digital Studio on Instagram (opens in a new tab)',
     jsonDescription:
       'Digital studio in Valencia. It audits how a company is read on the web and, if needed, builds the page so people understand it and write.',
     knowsAbout: ['Website audit', 'Experience design', 'Website creation'],
@@ -367,7 +370,6 @@ export const copy: Record<Lang, LottaCopy> = {
     mailtoSubject: 'Consulta sobre la meva web',
     skip: 'Salta al contingut',
     navLabel: 'Seccions',
-    footerNav: 'Peu',
     openMenu: 'Obre el menú',
     closeMenu: 'Tanca el menú',
     language: 'Idioma',
@@ -507,7 +509,9 @@ export const copy: Record<Lang, LottaCopy> = {
     contactTitle: 'Explica’ns com està la teva web.',
     contactBody: 'Què vens, a qui i si ja tens pàgina. Amb això et diem quin paquet encaixa.',
     contactReply: 'Resposta en un dia laborable · València',
-    footer: 'Estudi digital · Auditoria i creació de webs · València',
+    footerRights: '© 2026 Lotta Digital Studio. Tots els drets reservats.',
+    footerOwner: 'Aquest web és propietat de Lotta Digital Studio.',
+    instagram: 'Instagram de Lotta Digital Studio (s’obre en una pestanya nova)',
     jsonDescription:
       'Estudi digital a València. Audita com es llegeix una empresa a la web i, si cal, fa la pàgina perquè l’entenguin i escriguin.',
     knowsAbout: ['Auditoria web', 'Disseny d’experiència', 'Creació de pàgines web'],
@@ -519,7 +523,6 @@ export const copy: Record<Lang, LottaCopy> = {
     mailtoSubject: 'Consulta sobre a miña web',
     skip: 'Saltar ao contido',
     navLabel: 'Seccións',
-    footerNav: 'Pé',
     openMenu: 'Abrir menú',
     closeMenu: 'Pechar menú',
     language: 'Idioma',
@@ -659,7 +662,9 @@ export const copy: Record<Lang, LottaCopy> = {
     contactTitle: 'Cóntanos como está a túa web.',
     contactBody: 'Que vendes, a quen e se xa tes páxina. Con iso díchemos que paquete encaixa.',
     contactReply: 'Resposta nun día laborable · Valencia',
-    footer: 'Estudio dixital · Auditoría e creación de webs · Valencia',
+    footerRights: '© 2026 Lotta Digital Studio. Todos os dereitos reservados.',
+    footerOwner: 'Esta web é propiedade de Lotta Digital Studio.',
+    instagram: 'Instagram de Lotta Digital Studio (ábrese nunha lapela nova)',
     jsonDescription:
       'Estudio dixital en Valencia. Audita como se le unha empresa na web e, se fai falta, fai a páxina para que a entendan e escriban.',
     knowsAbout: ['Auditoría web', 'Deseño de experiencia', 'Creación de páxinas web'],
@@ -671,7 +676,6 @@ export const copy: Record<Lang, LottaCopy> = {
     mailtoSubject: 'Kontsulta nire webguneari buruz',
     skip: 'Joan edukira',
     navLabel: 'Atalak',
-    footerNav: 'Orri-oina',
     openMenu: 'Ireki menua',
     closeMenu: 'Itxi menua',
     language: 'Hizkuntza',
@@ -811,7 +815,9 @@ export const copy: Record<Lang, LottaCopy> = {
     contactTitle: 'Kontatu iezaguzu zure webgunea nola dagoen.',
     contactBody: 'Zer saltzen duzun, nori eta orririk baduzun. Horrekin esango dizugu zein pakete datorkizun.',
     contactReply: 'Erantzuna lanegun batean · Valentzia',
-    footer: 'Estudio digitala · Weben auditoria eta sorrera · Valentzia',
+    footerRights: '© 2026 Lotta Digital Studio. Eskubide guztiak erreserbatuta.',
+    footerOwner: 'Webgune hau Lotta Digital Studio-rena da.',
+    instagram: 'Lotta Digital Studioren Instagram (fitxa berri batean irekitzen da)',
     jsonDescription:
       'Valentziako estudio digitala. Enpresa bat webean nola irakurtzen den aztertzen du eta, beharrezkoa bada, orria egiten du uler dadin eta idatz dezaten.',
     knowsAbout: ['Web auditoria', 'Esperientziaren diseinua', 'Web orrien sorrera'],

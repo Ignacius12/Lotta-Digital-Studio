@@ -11,6 +11,17 @@ import { studioGraph } from '../schema'
 import { unsplashSrcSet } from '../sites/shared/demo'
 
 const mail = 'lotta.digital.studio@gmail.com'
+const instagram = 'https://www.instagram.com/studiolottadigital/'
+
+function InstagramIcon({ size = 36 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
+    </svg>
+  )
+}
 
 const shell = 'mx-auto w-full max-w-[1760px] px-4 sm:px-6 lg:px-8 xl:px-10'
 
@@ -775,16 +786,18 @@ function HubPage() {
         <div className={`flex flex-col gap-8 py-10 md:flex-row md:items-end md:justify-between ${shell}`}>
           <div>
             <img src={logo} alt="Lotta Digital Studio" className="h-12 w-auto sm:h-14" />
-            <p className="mt-3 text-sm text-lotta-muted">{t.footer}</p>
+            <p className="mt-3 text-sm text-lotta-muted">{t.footerOwner}</p>
+            <p className="mt-1 text-sm text-lotta-muted">{t.footerRights}</p>
           </div>
-          <nav aria-label={t.footerNav} className="flex flex-wrap gap-x-6 gap-y-2">
-            {t.nav.map((item) => (
-              <a key={item.href} href={item.href} className="text-sm text-lotta-muted hover:text-lotta-ink">
-                {item.label}
-              </a>
-            ))}
-          </nav>
-          <p className="text-sm text-lotta-muted">© 2026</p>
+          <a
+            href={instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-12 min-w-12 items-center justify-center text-lotta-ink hover:text-lotta-signal"
+            aria-label={t.instagram}
+          >
+            <InstagramIcon />
+          </a>
         </div>
       </footer>
     </div>
