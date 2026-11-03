@@ -1,147 +1,78 @@
-import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, type MouseEvent, type ReactNode, type TransitionEvent } from 'react'
+import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ArrowUpRight, Mail, MapPin, Menu, X } from 'lucide-react'
-import estudio from '../assets/estudio-hero.jpg'
+import { ArrowRight, ArrowUpRight, ChevronDown, Mail, MapPin, Menu, X } from 'lucide-react'
+import logo from '../assets/logo-lotta.png'
+import logoDark from '../assets/logo-lotta-dark.png'
 import { useInView } from '../hooks/useInView'
+import { copy, languages, readLang, type Lang, type LottaCopy } from '../i18n/copy'
 
 const mail = 'lotta.digital.studio@gmail.com'
-const mailto = `mailto:${mail}?subject=${encodeURIComponent('Consulta sobre mi web')}`
 
 const shell = 'mx-auto w-full max-w-[1760px] px-4 sm:px-6 lg:px-8 xl:px-10'
 
-const nav = [
-  { href: '#recorrido', label: 'Proceso' },
-  { href: '#servicios', label: 'Servicios' },
-  { href: '#ejemplos', label: 'Ejemplos' },
-  { href: '#contacto', label: 'Contacto' },
+function nightRandom(seed: number) {
+  let value = seed
+  return () => {
+    value = (value * 16807) % 2147483647
+    return (value - 1) / 2147483646
+  }
+}
+
+const nightStars = Array.from({ length: 96 }, (_, id) => {
+  const random = nightRandom(1103 + id * 97)
+  const bright = random() > 0.78
+  return {
+    id,
+    left: random() * 100,
+    top: random() * 100,
+    size: bright ? 3.4 + random() * 1.8 : 2 + random() * 1.2,
+    delay: random() * 5.5,
+    duration: 2.2 + random() * 3.4,
+    peak: bright ? 1 : 0.62 + random() * 0.32,
+    tone: random() > 0.72 ? '#e9d5ff' : '#ffffff',
+  }
+})
+
+const serviceMeta = [
+  { name: 'Lotta Essential', price: '49 €' },
+  { name: 'Lotta Business', price: '85 €' },
+  { name: 'Lotta Premium', price: '135 €' },
 ]
 
-const beats = [
-  { n: '01', title: 'Te entienden', text: 'Qué haces y para quién, en la primera pantalla.' },
-  { n: '02', title: 'No se pierden', text: 'Cada bloque lleva al siguiente, hasta el correo.' },
-  { n: '03', title: 'Te escriben', text: 'El correo está a la vista y se entiende qué pasa al pulsarlo.' },
-]
-
-const starts = [
-  {
-    n: '01',
-    title: 'La web ya existe y no se entiende',
-    text: 'Puede estar bien diseñada y, aun así, no decir qué vendes. La auditoría marca dónde se pierde el mensaje y qué conviene cambiar primero.',
-  },
-  {
-    n: '02',
-    title: 'Todavía no hay web',
-    text: 'El negocio ya funciona y la página no existe. Definimos qué tiene que decir la primera pantalla y la construimos desde ahí.',
-  },
-  {
-    n: '03',
-    title: 'Hay visitas y no hay correos',
-    text: 'La gente entra y no escribe. Casi siempre el camino se corta o el correo está escondido. Lo dejamos claro y a la vista.',
-  },
-]
-
-const steps = [
-  {
-    number: '01',
-    title: 'Nos cuentas el negocio',
-    text: 'Qué vendes, a quién y qué debería hacer alguien que llega a la web por primera vez.',
-  },
-  {
-    number: '02',
-    title: 'Leemos la web como un cliente',
-    text: 'Si ya existe, la recorremos con prisa, como quien no te conoce. Si no existe, definimos qué tiene que contar desde el primer día.',
-  },
-  {
-    number: '03',
-    title: 'La escribimos y la diseñamos',
-    text: 'El texto, las páginas y el botón cuentan la misma historia. El diseño la hace fácil de leer, no la sustituye.',
-  },
-  {
-    number: '04',
-    title: 'La publicamos',
-    text: 'Queda en internet, es tuya y puedes comprobar si las visitas llegan al correo.',
-  },
-]
-
-const services = [
-  {
-    number: '01',
-    name: 'Auditoría',
-    title: 'Ver la web con los ojos de quien compra.',
-    body: 'Cuando la página ya existe y algo no funciona: el mensaje, el camino o el correo. Señalamos dónde se pierde y qué impide que te escriban.',
-    points: [
-      'De la entrada al correo, como lo haría un cliente',
-      'Qué se entiende, qué sobra y qué frena',
-      'Un informe breve, por orden de urgencia',
-    ],
-  },
-  {
-    number: '02',
-    name: 'Creación',
-    title: 'La web que explica tu empresa sin ti.',
-    body: 'Cuando hay que hacerla: de cero, o a partir de lo que la auditoría ha dejado claro. Una dirección visual propia, no una plantilla con el logo cambiado.',
-    points: [
-      'Textos que se entienden a la primera',
-      'Diseño a medida, con carácter propio',
-      'Publicada, con el correo a la vista',
-    ],
-  },
-]
-
-const examples = [
+const exampleMeta = [
   {
     to: '/restaurante',
-    label: 'Restaurante',
     name: 'Casa Oliva',
-    description: 'Cena para compartir: producto de temporada y la reserva a la vista.',
-    image:
-      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80&auto=format&fit=crop',
-    imageAlt: 'Mesa de restaurante con platos mediterráneos',
+    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80&auto=format&fit=crop',
   },
   {
     to: '/clinica',
-    label: 'Clínica dental',
     name: 'Clínica Alba',
-    description: 'La primera visita, explicada con calma, y una cita fácil de pedir.',
-    image:
-      'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1400&q=80&auto=format&fit=crop',
-    imageAlt: 'Recepción luminosa de clínica dental moderna',
+    image: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1400&q=80&auto=format&fit=crop',
   },
   {
     to: '/horno',
-    label: 'Horno',
     name: 'Horno La Espiga',
-    description: 'La compra de la mañana: pan del día, bollería y encargos del domingo.',
-    image:
-      'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1400&q=80&auto=format&fit=crop',
-    imageAlt: 'Panes artesanos recién horneados',
+    image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1400&q=80&auto=format&fit=crop',
   },
   {
     to: '/pub',
-    label: 'Pub',
     name: 'El Candil',
-    description: 'Quedar con amigos: cañas, ambiente y sitio para un grupo.',
-    image:
-      'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1400&q=80&auto=format&fit=crop',
-    imageAlt: 'Interior cálido de pub con barra de madera',
+    image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1400&q=80&auto=format&fit=crop',
   },
 ]
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'ProfessionalService',
-  name: 'Lotta',
-  description:
-    'Estudio digital en Valencia. Audita cómo se lee una empresa en la web y, si hace falta, hace la página para que la entiendan y escriban.',
-  url: 'https://ignacius12.github.io/PruebaWeb/',
-  email: mail,
-  areaServed: 'ES',
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Valencia',
-    addressCountry: 'ES',
-  },
-  knowsAbout: ['Auditoría web', 'Diseño de experiencia', 'Creación de páginas web'],
+const Language = createContext<{
+  lang: Lang
+  setLang: (lang: Lang) => void
+  t: LottaCopy
+} | null>(null)
+
+function useCopy() {
+  const value = useContext(Language)
+  if (!value) throw new Error('Language')
+  return value
 }
 
 function Reveal({
@@ -167,61 +98,190 @@ function Reveal({
   )
 }
 
-function Mark({ className = '' }: { className?: string }) {
+type Star = {
+  id: number
+  x: number
+  y: number
+  dx: number
+  dy: number
+  rot: number
+  size: number
+  color: string
+}
+
+const starColors = ['#c084fc', '#f7f7ff', '#7c3aed', '#ffe08a']
+const Stars = createContext<(event: MouseEvent<HTMLElement>) => void>(() => {})
+
+function useStarBurst() {
+  const [stars, setStars] = useState<Star[]>([])
+  const seq = useRef(0)
+
+  const burst = (event: MouseEvent<HTMLElement>) => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const rect = event.currentTarget.getBoundingClientRect()
+    const x = event.clientX || rect.left + rect.width / 2
+    const y = event.clientY || rect.top + rect.height / 2
+    const batch = Array.from({ length: 14 }, (_, index) => {
+      const angle = (Math.PI * 2 * index) / 14 + (Math.random() - 0.5) * 0.55
+      const dist = 32 + Math.random() * 58
+      seq.current += 1
+      return {
+        id: seq.current,
+        x,
+        y,
+        dx: Math.cos(angle) * dist,
+        dy: Math.sin(angle) * dist - 10,
+        rot: (Math.random() - 0.5) * 200,
+        size: 7 + Math.random() * 9,
+        color: starColors[index % starColors.length],
+      }
+    })
+    setStars((current) => [...current, ...batch])
+    const ids = new Set(batch.map((star) => star.id))
+    window.setTimeout(() => {
+      setStars((current) => current.filter((star) => !ids.has(star.id)))
+    }, 760)
+  }
+
+  return { stars, burst }
+}
+
+function StarLayer({ stars }: { stars: Star[] }) {
+  if (stars.length === 0) return null
   return (
-    <span
-      className={`inline-block size-2.5 rounded-sm bg-lotta-glow ${className}`}
-      aria-hidden="true"
-    />
+    <div className="pointer-events-none fixed inset-0 z-[80]" aria-hidden="true">
+      {stars.map((star) => (
+        <span
+          key={star.id}
+          className="lotta-star"
+          style={{
+            left: star.x,
+            top: star.y,
+            ['--dx' as string]: `${star.dx}px`,
+            ['--dy' as string]: `${star.dy}px`,
+            ['--rot' as string]: `${star.rot}deg`,
+            ['--size' as string]: `${star.size}px`,
+            ['--tone' as string]: star.color,
+          }}
+        />
+      ))}
+    </div>
   )
 }
 
-function TalkLink({ className = '' }: { className?: string }) {
+function FillLink({
+  href,
+  className = '',
+  children,
+  onClick,
+}: {
+  href: string
+  className?: string
+  children: ReactNode
+  onClick?: (event: MouseEvent<HTMLAnchorElement>) => void
+}) {
+  const burst = useContext(Stars)
   return (
     <a
-      href="#contacto"
-      className={`inline-flex h-12 items-center justify-center gap-2 rounded-none bg-white px-5 text-base font-semibold whitespace-nowrap text-lotta-ink transition duration-300 hover:-translate-y-0.5 hover:bg-lotta-glow sm:h-[3.75rem] sm:px-8 sm:text-lg ${className}`}
+      href={href}
+      className={`lotta-fill ${className}`}
+      onClick={(event) => {
+        burst(event)
+        onClick?.(event)
+      }}
     >
-      Escríbenos
-      <ArrowRight size={18} aria-hidden="true" />
+      {children}
     </a>
   )
 }
 
+function TalkLink({ className = '' }: { className?: string }) {
+  const { t } = useCopy()
+  return (
+    <FillLink
+      href="#contacto"
+      className={`inline-flex h-12 items-center justify-center gap-2 rounded-none bg-lotta-wash px-5 text-base font-semibold whitespace-nowrap text-lotta-ink sm:h-[3.75rem] sm:px-8 sm:text-lg ${className}`}
+    >
+      {t.write}
+      <ArrowRight size={18} aria-hidden="true" />
+    </FillLink>
+  )
+}
+
 function StudioHeader() {
+  const { t, lang, setLang } = useCopy()
   const [open, setOpen] = useState(false)
+  const [hold, setHold] = useState(false)
+  const [langOpen, setLangOpen] = useState(false)
+  const menuRef = useRef<HTMLElement>(null)
+  const openRef = useRef(open)
+  openRef.current = open
 
   useEffect(() => {
-    if (!open) return
+    if (!open || !hold) return
+    let inner = 0
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => {
+        if (openRef.current) menuRef.current?.classList.add('is-open')
+      })
+    })
+    return () => {
+      cancelAnimationFrame(outer)
+      cancelAnimationFrame(inner)
+    }
+  }, [open, hold])
+
+  useEffect(() => {
+    if (open || !hold) return
+    const timer = window.setTimeout(() => setHold(false), 560)
+    return () => window.clearTimeout(timer)
+  }, [open, hold])
+
+  useEffect(() => {
+    if (!hold) return
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOpen(false)
     }
+    const desktop = window.matchMedia('(min-width: 1024px)').matches
     const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    if (!desktop) document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', onKey)
     return () => {
       document.body.style.overflow = previous
       window.removeEventListener('keydown', onKey)
     }
-  }, [open])
+  }, [hold])
 
-  const close = () => setOpen(false)
+  const close = () => {
+    setOpen(false)
+    setLangOpen(false)
+    menuRef.current?.classList.remove('is-open')
+  }
+
+  const onMenuTransition = (event: TransitionEvent<HTMLElement>) => {
+    if (event.target !== event.currentTarget || event.propertyName !== 'opacity') return
+    if (!open) setHold(false)
+  }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#101614] text-white">
+    <header className="sticky top-0 z-50 text-white">
+      <div
+        className={`pointer-events-none absolute top-0 left-0 h-36 backdrop-blur-lg sm:h-52 ${hold ? 'right-0 lg:right-96' : 'right-0'}`}
+        aria-hidden="true"
+        style={{
+          background:
+            'linear-gradient(to bottom, rgb(8 15 27 / 0.98) 0%, rgb(8 15 27 / 0.78) 40%, rgb(8 15 27 / 0.22) 72%, rgb(8 15 27 / 0) 100%)',
+          maskImage: 'linear-gradient(to bottom, #000 0%, #000 38%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 38%, transparent 100%)',
+        }}
+      />
       <div className={`relative z-50 flex h-20 items-center justify-between gap-3 sm:h-24 ${shell}`}>
-        <a href="#inicio" className="inline-flex min-w-0 items-center gap-2.5" onClick={close}>
-          <Mark />
-          <span className="font-lotta text-2xl leading-none font-bold tracking-[-0.015em] sm:text-[1.7rem]">
-            Lotta
-          </span>
-          <span className="hidden text-xs font-medium tracking-[0.14em] text-white/55 uppercase lg:inline">
-            Estudio digital · Valencia
-          </span>
+        <a href="#inicio" className="inline-flex min-w-0 items-center" onClick={close}>
+          <img src={logoDark} alt="Lotta Digital Studio" className="h-11 w-auto sm:h-16" />
         </a>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Secciones">
-          {nav.map((item) => (
+        <nav className="hidden items-center gap-8 lg:flex" aria-label={t.navLabel}>
+          {t.nav.map((item) => (
             <a
               key={item.href}
               href={item.href}
@@ -232,51 +292,98 @@ function StudioHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <TalkLink />
-          <button
-            type="button"
-            className="inline-flex size-12 items-center justify-center rounded-none border border-white/15 lg:hidden"
-            aria-expanded={open}
-            aria-controls="menu-lotta"
-            aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
-            onClick={() => setOpen((value) => !value)}
-          >
-            {open ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
-          </button>
-        </div>
+        <button
+          type="button"
+          className="inline-flex size-12 items-center justify-center bg-transparent text-white"
+          aria-expanded={open}
+          aria-controls="menu-lotta"
+          aria-label={open ? t.closeMenu : t.openMenu}
+          onClick={() => {
+            if (open) close()
+            else {
+              setHold(true)
+              setOpen(true)
+            }
+          }}
+        >
+          {open ? <X size={26} aria-hidden="true" /> : <Menu size={26} aria-hidden="true" />}
+        </button>
       </div>
 
-      {open && (
-        <nav
-          id="menu-lotta"
-          aria-label="Secciones"
-          className="fixed inset-0 z-40 flex flex-col bg-[#101614] px-5 pt-28 text-white sm:px-8 lg:hidden"
-        >
-          {nav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              onClick={close}
-              className="border-b border-white/10 py-4 font-lotta text-4xl font-bold tracking-[-0.015em]"
-            >
-              {item.label}
-            </a>
-          ))}
-          <a
-            href="#contacto"
-            onClick={close}
-            className="mt-8 inline-flex h-14 items-center justify-center rounded-none bg-white text-base font-semibold text-lotta-ink"
+      {hold &&
+        createPortal(
+          <nav
+            ref={menuRef}
+            id="menu-lotta"
+            aria-label={t.navLabel}
+            onTransitionEnd={onMenuTransition}
+            className="lotta-menu flex flex-col overflow-y-auto bg-lotta-ink px-5 pt-28 pb-12 text-white sm:px-10 lg:px-8"
           >
-            Escríbenos
-          </a>
-        </nav>
-      )}
+            <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col lg:max-w-none">
+              <div className="grid lg:hidden">
+                {t.nav.map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={close}
+                    className="border-b border-white/10 py-4 font-lotta text-4xl font-bold tracking-[-0.015em]"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+              <div className="mt-6 border-b border-white/10 lg:mt-0">
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-between py-4 font-lotta text-2xl font-bold"
+                  aria-expanded={langOpen}
+                  aria-controls="idiomas-lotta"
+                  onClick={() => setLangOpen((value) => !value)}
+                >
+                  {t.language}
+                  <ChevronDown
+                    size={22}
+                    aria-hidden="true"
+                    className={`transition duration-300 ${langOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                {langOpen && (
+                  <ul id="idiomas-lotta" className="grid gap-1 pb-4 sm:grid-cols-2 lg:grid-cols-1">
+                    {languages.map((item) => (
+                      <li key={item.id}>
+                        <button
+                          type="button"
+                          aria-current={lang === item.id ? 'true' : undefined}
+                          className={`px-1 py-2 text-left text-lg ${lang === item.id ? 'font-semibold' : ''}`}
+                          onClick={() => {
+                            setLang(item.id)
+                            close()
+                          }}
+                        >
+                          {item.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <FillLink
+                href="#contacto"
+                onClick={close}
+                className="mt-8 inline-flex h-14 w-full items-center justify-center rounded-none bg-lotta-wash text-base font-semibold text-lotta-ink"
+              >
+                {t.write}
+              </FillLink>
+            </div>
+          </nav>,
+          document.body,
+        )}
     </header>
   )
 }
 
 function Hero() {
+  const { t } = useCopy()
   const glow = useRef<HTMLDivElement>(null)
 
   const onMouseMove = (event: MouseEvent<HTMLElement>) => {
@@ -284,7 +391,7 @@ function Hero() {
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
     if (glow.current) {
-      glow.current.style.background = `radial-gradient(540px circle at ${x}px ${y}px, rgb(45 212 191 / 0.22), transparent 62%)`
+      glow.current.style.background = `radial-gradient(540px circle at ${x}px ${y}px, rgb(124 58 237 / 0.28), transparent 62%)`
     }
   }
 
@@ -292,7 +399,7 @@ function Hero() {
     <section
       aria-labelledby="reclamo"
       onMouseMove={onMouseMove}
-      className="relative overflow-hidden bg-[#101614] text-white"
+      className="relative -mt-20 overflow-hidden bg-lotta-ink pt-20 text-white sm:-mt-24 sm:pt-24"
     >
       <div
         ref={glow}
@@ -304,7 +411,7 @@ function Hero() {
         aria-hidden="true"
       />
       <div
-        className="lotta-orb-delayed pointer-events-none absolute -right-20 bottom-0 size-[24rem] rounded-full bg-emerald-300/20 blur-3xl"
+        className="lotta-orb-delayed pointer-events-none absolute -right-20 bottom-0 size-[24rem] rounded-full bg-lotta-glow/25 blur-3xl"
         aria-hidden="true"
       />
       <div
@@ -317,40 +424,52 @@ function Hero() {
           maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 78%)',
         }}
       />
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        {nightStars.map((star) => (
+          <span
+            key={star.id}
+            className="lotta-night"
+            style={{
+              left: `${star.left}%`,
+              top: `${star.top}%`,
+              width: star.size,
+              height: star.size,
+              background: star.tone,
+              ['--delay' as string]: `${star.delay}s`,
+              ['--dur' as string]: `${star.duration}s`,
+              ['--peak' as string]: String(star.peak),
+            }}
+          />
+        ))}
+      </div>
 
-      <div className={`relative grid items-center gap-8 py-12 sm:py-16 lg:grid-cols-2 lg:gap-10 lg:py-16 ${shell}`}>
-        <div className="lotta-rise flex flex-col justify-center">
+      <div className={`relative flex justify-center py-16 sm:py-20 lg:py-40 ${shell}`}>
+        <div className="lotta-rise flex max-w-3xl flex-col items-center text-center">
           <p className="inline-flex items-center gap-2 text-sm font-medium text-lotta-glow">
             <MapPin size={16} aria-hidden="true" />
-            Estudio digital en Valencia
+            {t.kicker}
           </p>
           <h1
             id="reclamo"
             className="font-lotta mt-5 text-[clamp(2.7rem,3.5vw,4.25rem)] leading-[1.05] font-bold tracking-[-0.03em]"
           >
-            Una web clara
-            <span className="mt-1 block text-lotta-glow">explica el negocio sola.</span>
+            {t.heroTitle}
+            <span className="mt-1 block text-lotta-glow">{t.heroAccent}</span>
           </h1>
-          <p className="mt-6 max-w-xl text-base text-white/72 sm:text-lg">
-            Auditamos cómo te leen y, si hace falta, hacemos la web. Quien entra tiene que entender
-            qué ofreces, seguir sin perderse y escribirte. Siempre en ese orden.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <p className="mt-6 max-w-xl text-base text-white/90 sm:text-lg">{t.heroBody}</p>
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <TalkLink />
-            <a
+            <FillLink
               href="#ejemplos"
-              className="inline-flex h-12 items-center justify-center rounded-none border border-white/20 px-5 text-base font-semibold transition duration-300 hover:-translate-y-0.5 hover:border-white hover:bg-white/10 sm:h-[3.75rem] sm:px-8 sm:text-lg"
+              className="lotta-fill-line inline-flex h-12 items-center justify-center rounded-none border border-white/20 px-5 text-base font-semibold sm:h-[3.75rem] sm:px-8 sm:text-lg"
             >
-              Ver ejemplos
-            </a>
+              {t.seeExamples}
+            </FillLink>
           </div>
-        </div>
-        <div className="lotta-rise-2">
-          <img
-            src={estudio}
-            alt="Reunión en el estudio: se revisa un documento mientras se presenta la web, el vídeo y los resultados."
-            className="h-auto w-full"
-          />
+          <a href="#sigue" className="mt-12 inline-flex text-white/80 sm:mt-16">
+            <ChevronDown className="lotta-scroll-arrow" size={32} aria-hidden="true" />
+            <span className="sr-only">{t.scroll}</span>
+          </a>
         </div>
       </div>
     </section>
@@ -431,25 +550,63 @@ function ScrollProgress() {
 }
 
 export function Hub() {
-  useEffect(() => {
-    document.title = 'Lotta, estudio digital en Valencia'
-  }, [])
+  const [lang, setLang] = useState<Lang>(readLang)
 
   return (
+    <Language.Provider value={{ lang, setLang, t: copy[lang] }}>
+      <HubPage />
+    </Language.Provider>
+  )
+}
+
+function HubPage() {
+  const { stars, burst } = useStarBurst()
+  const { t, lang } = useCopy()
+  const mailto = `mailto:${mail}?subject=${encodeURIComponent(t.mailtoSubject)}`
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: 'Lotta',
+    description: t.jsonDescription,
+    url: 'https://ignacius12.github.io/PruebaWeb/',
+    email: mail,
+    areaServed: 'ES',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Valencia',
+      addressCountry: 'ES',
+    },
+    knowsAbout: t.knowsAbout,
+  }
+
+  useEffect(() => {
+    document.title = t.metaTitle
+    document.documentElement.lang = lang
+    document.querySelector('meta[name="description"]')?.setAttribute('content', t.metaDescription)
+    try {
+      localStorage.setItem('lotta-lang', lang)
+    } catch {
+      /* storage unavailable */
+    }
+  }, [lang, t])
+
+  return (
+    <Stars.Provider value={burst}>
     <div id="inicio" className="theme-lotta min-h-svh bg-lotta-paper text-lotta-ink">
       <ScrollProgress />
+      <StarLayer stars={stars} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <a href="#contenido" className="skip-link">
-        Saltar al contenido
+        {t.skip}
       </a>
       <StudioHeader />
 
       <main id="contenido">
         <Hero />
 
-        <section aria-label="Qué tiene que poder hacer quien entra" className="border-b border-lotta-line bg-white">
+        <section id="sigue" aria-label={t.beatsLabel} className="scroll-mt-24 border-b border-lotta-line bg-white sm:scroll-mt-28">
           <ol className={`grid sm:grid-cols-3 ${shell}`}>
-            {beats.map((beat, index) => (
+            {t.beats.map((beat, index) => (
               <li
                 key={beat.n}
                 className="lotta-rise border-b border-lotta-line py-6 sm:border-b-0 sm:border-l sm:px-6 sm:first:border-l-0 sm:first:pl-0 lg:py-8"
@@ -467,15 +624,15 @@ export function Hub() {
 
         <Chapter
           id="recorrido"
-          index="01 — El proceso"
-          title="De la primera conversación a la web publicada."
-          intro="Cuatro pasos, siempre en este orden. Cada uno deja algo concreto: lo que nos cuentas, el diagnóstico, la web y la publicación."
+          index={t.processIndex}
+          title={t.processTitle}
+          intro={t.processIntro}
         >
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {steps.map((step, index) => (
+            {t.steps.map((step, index) => (
               <Reveal key={step.number} delay={index * 80} className="h-full">
-                <article className="flex h-full flex-col rounded-none border border-lotta-line bg-white p-6 transition duration-300 hover:-translate-y-1.5 hover:border-lotta-signal/40 hover:shadow-[0_20px_50px_rgb(16_22_20/0.08)]">
-                  <span className="font-lotta grid size-12 place-items-center rounded-none bg-[#101614] text-lg font-bold text-white">
+                <article className="flex h-full flex-col rounded-none border border-lotta-line bg-white p-6 transition duration-300 hover:-translate-y-1.5 hover:border-lotta-signal/40 hover:shadow-[0_20px_50px_rgb(8_15_27/0.08)]">
+                  <span className="font-lotta grid size-12 place-items-center rounded-none bg-lotta-ink text-lg font-bold text-white">
                     {step.number}
                   </span>
                   <h3 className="font-lotta mt-5 text-2xl leading-snug font-bold tracking-[-0.015em]">
@@ -490,15 +647,15 @@ export function Hub() {
 
         <Chapter
           id="partida"
-          index="02 — El punto de partida"
-          title="Tres situaciones. Un solo criterio."
-          intro="El encargo depende de cómo esté tu web ahora. El criterio no cambia: que te entiendan y que puedan escribirte."
+          index={t.startIndex}
+          title={t.startTitle}
+          intro={t.startIntro}
           tone="white"
         >
           <div className="grid gap-4 lg:grid-cols-3">
-            {starts.map((item, index) => (
+            {t.starts.map((item, index) => (
               <Reveal key={item.n} delay={index * 90}>
-                <article className="h-full rounded-none bg-[#101614] p-6 text-white transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgb(16_22_20/0.18)] sm:p-8">
+                <article className="h-full rounded-none bg-lotta-ink p-6 text-white transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgb(8_15_27/0.18)] sm:p-8">
                   <p className="font-lotta text-4xl font-bold tracking-[-0.02em] text-lotta-glow">
                     {item.n}
                   </p>
@@ -512,20 +669,20 @@ export function Hub() {
 
         <Chapter
           id="servicios"
-          index="03 — Servicios"
-          title="Dos encargos. Juntos o por separado."
-          intro="Puedes pedir solo la auditoría, o también la web. En los dos casos partimos de lo mismo: que te entiendan y que sepan escribirte."
+          index={t.servicesIndex}
+          title={t.servicesTitle}
+          intro={t.servicesIntro}
         >
-          <div className="grid gap-4 lg:grid-cols-2">
-            {services.map((service, index) => (
-              <Reveal key={service.number} delay={index * 100}>
-                <article className="h-full overflow-hidden rounded-none border border-lotta-line bg-white transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgb(16_22_20/0.08)]">
-                  <div className="flex items-center justify-between bg-[#101614] px-6 py-5 text-white sm:px-8">
-                    <p className="font-lotta text-xl font-bold tracking-[0.08em] uppercase sm:text-2xl">{service.name}</p>
-                    <p className="font-lotta text-3xl font-bold text-lotta-glow">{service.number}</p>
+          <div className="grid gap-4 lg:grid-cols-3">
+            {t.services.map((service, index) => (
+              <Reveal key={serviceMeta[index].name} delay={index * 100}>
+                <article className="flex h-full flex-col overflow-hidden rounded-none border border-lotta-line bg-white transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgb(8_15_27/0.08)]">
+                  <div className="flex items-end justify-between gap-4 bg-lotta-ink px-6 py-5 text-white sm:px-8">
+                    <p className="font-lotta text-xl font-bold tracking-[0.04em] uppercase sm:text-2xl">{serviceMeta[index].name}</p>
+                    <p className="font-lotta text-3xl font-bold whitespace-nowrap text-lotta-glow">{serviceMeta[index].price}</p>
                   </div>
-                  <div className="p-6 sm:p-8">
-                    <h3 className="font-lotta text-[clamp(1.6rem,2vw,2.1rem)] leading-snug font-bold tracking-[-0.015em]">
+                  <div className="flex flex-1 flex-col p-6 sm:p-8">
+                    <h3 className="font-lotta text-[clamp(1.4rem,1.6vw,1.8rem)] leading-snug font-bold tracking-[-0.015em]">
                       {service.title}
                     </h3>
                     <p className="mt-4 text-lotta-muted">{service.body}</p>
@@ -542,26 +699,27 @@ export function Hub() {
               </Reveal>
             ))}
           </div>
+          <p className="mt-6 max-w-3xl text-sm text-lotta-muted">{t.pricesNote}</p>
         </Chapter>
 
         <Chapter
           id="ejemplos"
-          index="04 — Ejemplos"
-          title="Cuatro oficios. El mismo recorrido."
-          intro="Son demostraciones, no clientes reales. En todas se entiende el negocio al entrar, hay un camino y una forma clara de seguir."
+          index={t.examplesIndex}
+          title={t.examplesTitle}
+          intro={t.examplesIntro}
           tone="white"
         >
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {examples.map((example, index) => (
+            {exampleMeta.map((example, index) => (
               <Reveal key={example.to} delay={index * 70} className="h-full">
                 <Link
                   to={example.to}
-                  className="group flex h-full flex-col overflow-hidden rounded-none border border-lotta-line bg-lotta-paper transition duration-300 hover:-translate-y-1.5 hover:border-lotta-signal/40 hover:shadow-[0_20px_50px_rgb(16_22_20/0.1)]"
+                  className="group flex h-full flex-col overflow-hidden rounded-none border border-lotta-line bg-lotta-paper transition duration-300 hover:-translate-y-1.5 hover:border-lotta-signal/40 hover:shadow-[0_20px_50px_rgb(8_15_27/0.1)]"
                 >
                   <span className="relative block overflow-hidden">
                     <img
                       src={example.image}
-                      alt={example.imageAlt}
+                      alt={t.examples[index].imageAlt}
                       width={1400}
                       height={933}
                       loading="lazy"
@@ -571,14 +729,14 @@ export function Hub() {
                   </span>
                   <span className="flex flex-1 flex-col p-5">
                     <span className="font-lotta text-base font-bold tracking-[0.08em] text-lotta-signal uppercase sm:text-lg">
-                      {example.label}
+                      {t.examples[index].label}
                     </span>
                     <span className="font-lotta mt-2 text-2xl font-bold tracking-[-0.015em]">
                       {example.name}
                     </span>
-                    <span className="mt-2 flex-1 text-sm text-lotta-muted">{example.description}</span>
+                    <span className="mt-2 flex-1 text-sm text-lotta-muted">{t.examples[index].description}</span>
                     <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold">
-                      Entrar
+                      {t.enter}
                       <ArrowUpRight
                         size={16}
                         aria-hidden="true"
@@ -594,7 +752,7 @@ export function Hub() {
 
         <section id="contacto" aria-labelledby="contacto-heading" className="scroll-mt-28 bg-lotta-paper">
           <div className={`${shell} py-16 sm:py-20 lg:py-24`}>
-            <div className="relative overflow-hidden rounded-none bg-[#101614] px-5 py-12 text-white sm:px-10 sm:py-16 lg:px-14">
+            <div className="relative overflow-hidden rounded-none bg-lotta-ink px-5 py-12 text-white sm:px-10 sm:py-16 lg:px-14">
               <div
                 className="lotta-orb pointer-events-none absolute -top-20 -right-10 size-72 rounded-full bg-lotta-signal/50 blur-3xl"
                 aria-hidden="true"
@@ -603,18 +761,15 @@ export function Hub() {
                 <div className="lg:col-span-7">
                   <p className="inline-flex items-center gap-3 font-lotta text-2xl font-bold tracking-[0.08em] text-lotta-glow uppercase sm:text-3xl">
                     <MapPin size={22} aria-hidden="true" />
-                    05 — Contacto · Valencia
+                    {t.contactIndex}
                   </p>
                   <h2
                     id="contacto-heading"
                     className="font-lotta mt-4 text-[clamp(2.4rem,4vw,4.2rem)] leading-[1.08] font-bold tracking-[-0.02em]"
                   >
-                    Cuéntanos cómo está tu web.
+                    {t.contactTitle}
                   </h2>
-                  <p className="mt-5 max-w-xl text-base text-white/75 sm:text-lg">
-                    Qué vendes, a quién y si ya tienes página. Con eso te decimos si hace falta una
-                    auditoría, hacer la web, o las dos cosas.
-                  </p>
+                  <p className="mt-5 max-w-xl text-base text-white/75 sm:text-lg">{t.contactBody}</p>
                   <a
                     href={mailto}
                     className="mt-6 block max-w-full font-lotta text-[clamp(1.15rem,2vw,1.7rem)] leading-snug font-bold break-words text-lotta-glow underline decoration-lotta-glow/40 underline-offset-4"
@@ -623,14 +778,14 @@ export function Hub() {
                   </a>
                 </div>
                 <div className="lg:col-span-5 lg:justify-self-end">
-                  <a
+                  <FillLink
                     href={mailto}
-                    className="inline-flex h-16 items-center justify-center gap-3 rounded-none bg-white px-8 text-lg font-semibold text-lotta-ink transition duration-300 hover:-translate-y-0.5 hover:bg-lotta-glow"
+                    className="inline-flex h-16 items-center justify-center gap-3 rounded-none bg-lotta-wash px-8 text-lg font-semibold text-lotta-ink"
                   >
                     <Mail size={20} aria-hidden="true" />
-                    Enviar un correo
-                  </a>
-                  <p className="mt-4 text-sm text-white/55">Respuesta en un día laborable · Valencia</p>
+                    {t.sendMail}
+                  </FillLink>
+                  <p className="mt-4 text-sm text-white/55">{t.contactReply}</p>
                 </div>
               </div>
             </div>
@@ -641,16 +796,11 @@ export function Hub() {
       <footer className="border-t border-lotta-line bg-white">
         <div className={`flex flex-col gap-8 py-10 md:flex-row md:items-end md:justify-between ${shell}`}>
           <div>
-            <p className="inline-flex items-center gap-2.5">
-              <Mark />
-              <span className="font-lotta text-3xl font-bold tracking-[-0.015em]">Lotta</span>
-            </p>
-            <p className="mt-3 text-sm text-lotta-muted">
-              Estudio digital · Auditoría y creación de webs · Valencia
-            </p>
+            <img src={logo} alt="Lotta Digital Studio" className="h-12 w-auto sm:h-14" />
+            <p className="mt-3 text-sm text-lotta-muted">{t.footer}</p>
           </div>
-          <nav aria-label="Pie" className="flex flex-wrap gap-x-6 gap-y-2">
-            {nav.map((item) => (
+          <nav aria-label={t.footerNav} className="flex flex-wrap gap-x-6 gap-y-2">
+            {t.nav.map((item) => (
               <a key={item.href} href={item.href} className="text-sm text-lotta-muted hover:text-lotta-ink">
                 {item.label}
               </a>
@@ -660,5 +810,6 @@ export function Hub() {
         </div>
       </footer>
     </div>
+    </Stars.Provider>
   )
 }

@@ -5,12 +5,13 @@
   --font-lotta: "Source Sans 3", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
 
-  --color-lotta-paper: #f2f4f3;
-  --color-lotta-ink: #101614;
-  --color-lotta-muted: #5c6560;
-  --color-lotta-line: #d5ddd8;
-  --color-lotta-signal: #0f766e;
-  --color-lotta-glow: #2dd4bf;
+  --color-lotta-paper: #f7f7ff;
+  --color-lotta-wash: #efe4ff;
+  --color-lotta-ink: #080f1b;
+  --color-lotta-muted: #5c5872;
+  --color-lotta-line: #e3def2;
+  --color-lotta-signal: #7c3aed;
+  --color-lotta-glow: #c084fc;
 
   --color-cream: #f5f2eb;
   --color-cream-deep: #ebe6db;
@@ -394,5 +395,188 @@
 @media (prefers-reduced-motion: reduce) {
   .scroll-hint-icon {
     animation: none;
+  }
+}
+
+.lotta-fill {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    color 0.35s ease,
+    border-color 0.35s ease,
+    transform 0.3s ease;
+}
+
+.lotta-fill:not(.lotta-fill-line) {
+  border: 2px solid transparent;
+  background-color: transparent;
+  background-image:
+    linear-gradient(var(--color-lotta-wash), var(--color-lotta-wash)),
+    linear-gradient(
+      to right,
+      #5b21b6 0%,
+      #7c3aed 8%,
+      #c084fc 16%,
+      #f5d0fe 24%,
+      #ddd6fe 32%,
+      #a78bfa 40%,
+      #6d28d9 46%,
+      #5b21b6 50%,
+      #7c3aed 58%,
+      #c084fc 66%,
+      #f5d0fe 74%,
+      #ddd6fe 82%,
+      #a78bfa 90%,
+      #6d28d9 96%,
+      #5b21b6 100%
+    );
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-repeat: no-repeat, no-repeat;
+  background-size: auto, 200% 100%;
+  background-position: 0 0, 0% 50%;
+  animation: lotta-border 2.8s linear infinite;
+}
+
+@keyframes lotta-border {
+  to {
+    background-position: 0 0, 100% 50%;
+  }
+}
+
+.lotta-scroll-arrow {
+  animation: lotta-scroll 1.6s ease-in-out infinite;
+}
+
+@keyframes lotta-scroll {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(7px);
+    opacity: 1;
+  }
+}
+
+.lotta-fill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--color-lotta-signal);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lotta-fill:hover {
+  color: var(--color-lotta-paper);
+  transform: translateY(-2px);
+}
+
+.lotta-fill:hover::before {
+  transform: scaleX(1);
+}
+
+.lotta-fill-line::before {
+  background: var(--color-lotta-glow);
+}
+
+.lotta-fill-line:hover {
+  color: var(--color-lotta-ink);
+  border-color: transparent;
+}
+
+.lotta-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  width: 100vw;
+  height: 100dvh;
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lotta-menu.is-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.lotta-menu a:not(.lotta-fill),
+.lotta-menu button {
+  color: #fffcf7;
+}
+
+@media (min-width: 1024px) {
+  .lotta-menu {
+    inset: 0 0 0 auto;
+    width: 24rem;
+    height: 100dvh;
+    opacity: 1;
+    box-shadow: -24px 0 60px rgb(8 15 27 / 0.35);
+    transform: translateX(100%);
+  }
+
+  .lotta-menu.is-open {
+    transform: translateX(0);
+  }
+}
+
+.lotta-night {
+  position: absolute;
+  border-radius: 999px;
+  opacity: var(--peak);
+  box-shadow: 0 0 10px 1px color-mix(in srgb, var(--color-lotta-glow) 85%, white);
+  animation: lotta-twinkle var(--dur) ease-in-out var(--delay) infinite;
+}
+
+@keyframes lotta-twinkle {
+  0%,
+  100% {
+    opacity: calc(var(--peak) * 0.42);
+    transform: scale(0.75);
+  }
+  50% {
+    opacity: var(--peak);
+    transform: scale(1);
+  }
+}
+
+.lotta-star {
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  margin-left: calc(var(--size) / -2);
+  margin-top: calc(var(--size) / -2);
+  background: var(--tone);
+  clip-path: polygon(
+    50% 0%,
+    62% 34%,
+    98% 35%,
+    69% 56%,
+    79% 92%,
+    50% 71%,
+    21% 92%,
+    31% 56%,
+    2% 35%,
+    38% 34%
+  );
+  animation: lotta-star 720ms ease-out forwards;
+}
+
+@keyframes lotta-star {
+  0% {
+    transform: translate(0, 0) scale(0.3) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(1) rotate(var(--rot));
+    opacity: 0;
   }
 }
