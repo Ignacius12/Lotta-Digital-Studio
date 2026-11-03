@@ -1,21 +1,16 @@
-import { bakery } from '../config'
+import { useBakery } from '../content'
 
 export function BakeryTrust() {
+  const { c } = useBakery()
   return (
-    <section
-      aria-label="Señas del horno"
-      className="border-y border-bakery-line bg-bakery-paper"
-    >
-      <div className="bakery-container grid grid-cols-2 gap-6 py-8 md:grid-cols-4 md:gap-4 md:py-10">
-        {bakery.trust.map((item) => (
-          <p
-            key={item.id}
-            className="text-center font-medium text-bakery-ink-soft md:text-[0.95rem]"
-          >
-            {item.label}
-          </p>
+    <section aria-label={c.trustLabel} className="bg-bakery text-bakery-flour">
+      <ul className="bakery-container grid grid-cols-2 gap-6 py-8 md:grid-cols-4 md:py-10">
+        {c.trust.map((label) => (
+          <li key={label} className="display text-center text-xl italic md:text-2xl">
+            {label}
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   )
 }

@@ -1,10 +1,10 @@
 import { MapPin, Navigation } from 'lucide-react'
-import { clinic } from '../config'
+import { useClinic } from '../content'
 import { Button } from './Button'
 import { useInView } from '../../../hooks/useInView'
 
 export function ClinicLocation() {
-  const { address, hours, name, phone } = clinic
+  const { address, c, hours, name, phone, t } = useClinic()
   const fullAddress = `${address.street}, ${address.postalCode} ${address.city}`
   const { ref, visible } = useInView<HTMLElement>()
 
@@ -21,10 +21,10 @@ export function ClinicLocation() {
         }`}
       >
         <div className="mx-auto max-w-2xl text-left lg:max-w-4xl lg:text-center">
-          <p className="clinic-eyebrow">Ubicación</p>
+          <p className="clinic-eyebrow">{c.locationEyebrow}</p>
           <h2
             id="location-heading"
-            className="display mt-3 text-[2rem] text-clinic-ink md:text-[2.6rem] lg:mt-4 lg:text-[3.5rem] xl:text-[4rem]"
+            className="mt-4 font-sans text-[2rem] font-medium tracking-tight text-clinic-ink md:text-[2.75rem] lg:text-[3.25rem]"
           >
             {name}
           </h2>
@@ -32,20 +32,22 @@ export function ClinicLocation() {
 
         <div className="mt-10 grid gap-10 md:mt-14 md:grid-cols-12 md:gap-14 lg:gap-20">
           <div className="md:col-span-5">
-            <p className="flex items-start gap-2 text-clinic-ink-soft lg:text-lg">
-              <MapPin
-                size={18}
-                className="mt-1 shrink-0 text-clinic"
-                aria-hidden
-              />
-              <span>{fullAddress}</span>
-            </p>
-            <a
-              href={`tel:${phone.tel}`}
-              className="mt-3 inline-flex min-h-11 items-center text-clinic hover:text-clinic-deep lg:text-lg"
-            >
-              {phone.display}
-            </a>
+            <address className="not-italic">
+              <p className="flex items-start gap-2 text-clinic-ink-soft lg:text-lg">
+                <MapPin
+                  size={18}
+                  className="mt-1 shrink-0 text-clinic"
+                  aria-hidden
+                />
+                <span>{fullAddress}</span>
+              </p>
+              <a
+                href={`tel:${phone.tel}`}
+                className="mt-3 inline-flex min-h-11 items-center text-clinic hover:text-clinic-deep lg:text-lg"
+              >
+                {phone.display}
+              </a>
+            </address>
             <div className="mt-8">
               <Button
                 href={address.mapsUrl}
@@ -55,14 +57,14 @@ export function ClinicLocation() {
                 className="gap-2"
               >
                 <Navigation size={16} aria-hidden />
-                Cómo llegar
+                {t.directions}
               </Button>
             </div>
           </div>
 
           <div className="md:col-span-7">
             <h3 className="text-sm font-medium uppercase tracking-[0.14em] text-clinic lg:text-base">
-              Horario
+              {t.hours}
             </h3>
             <dl className="mt-5 divide-y divide-clinic-line border-y border-clinic-line">
               {hours.map((row) => (

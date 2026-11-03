@@ -1,47 +1,32 @@
-import { clinic } from '../config'
+import { localPlace } from '../../../schema'
+import { openingHoursSpecification } from '../../shared/demo'
+import { useClinic } from '../content'
 
 export function ClinicJsonLd() {
-  const { name, address, phone, hours, seo } = clinic
+  const { address, c, email, lang, name, ogImage, phone, schemaHours, treatments } = useClinic()
 
-  const openingHoursSpecification = hours
-    .filter((h) => h.hours !== 'Cerrado')
-    .flatMap((row) => {
-      const dayMap: Record<string, string[]> = {
-        'Lunes – Jueves': ['Monday', 'Tuesday', 'Wednesday', 'Thursday'],
-        Viernes: ['Friday'],
-      }
-      const days = dayMap[row.days] ?? []
-      const [opens, closes] = row.hours.split('–').map((p) => p.trim())
-      return days.map((day) => ({
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: day,
-        opens,
-        closes,
-      }))
-    })
-
-  const data = {
-    '@context': 'https://schema.org',
-    '@type': 'Dentist',
+  const data = localPlace({
+    type: 'Dentist',
+    lang,
+    page: 'clinic',
     name,
-    image: seo.ogImage,
-    url: seo.canonical,
+    description: c.description,
+    image: ogImage,
     telephone: phone.tel,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: address.street,
-      addressLocality: address.city,
-      postalCode: address.postalCode,
-      addressRegion: address.region,
-      addressCountry: address.country,
+    email,
+    address,
+    hours: openingHoursSpecification(schemaHours),
+    priceRange: '€€',
+    extra: {
+      medicalSpecialty: 'Dentistry',
+      isAcceptingNewPatients: true,
+      availableService: treatments.map((item) => ({
+        '@type': 'MedicalProcedure',
+        name: item.name,
+        description: item.description,
+      })),
     },
-    openingHoursSpecification,
-  }
+  })
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  )
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
 }

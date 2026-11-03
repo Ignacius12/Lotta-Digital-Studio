@@ -1,11 +1,9 @@
-import { galleryImages } from '../data/gallery'
+import { useRestaurant } from '../content'
 import { SectionHeading } from './ui/SectionHeading'
 import { useInView } from '../../../hooks/useInView'
 
-/** Four portrait frames — same collage rhythm as El Candil. */
-const collageImages = galleryImages.slice(0, 4)
-
 export function Gallery() {
+  const { c, gallery } = useRestaurant()
   const { ref, visible } = useInView<HTMLElement>()
 
   return (
@@ -20,23 +18,19 @@ export function Gallery() {
           visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
         }`}
       >
-        <SectionHeading
-          eyebrow="Galería"
-          title="Así se siente Casa Oliva."
-          id="gallery-heading"
-        />
+        <SectionHeading eyebrow={c.gallery.eyebrow} title={c.gallery.title} id="gallery-heading" />
 
-        <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 lg:mt-14 lg:gap-5">
-          {collageImages.map((image, index) => (
-            <div key={image.id} className="overflow-hidden">
+        <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 lg:mt-16 lg:gap-5">
+          {gallery.map((image, index) => (
+            <div key={image.id} className={index === 0 ? 'col-span-2 row-span-2' : ''}>
               <img
                 src={image.src}
                 alt={image.alt}
                 width={image.width}
                 height={image.height}
-                loading={index < 2 ? 'eager' : 'lazy'}
+                loading="lazy"
                 decoding="async"
-                className="aspect-[3/4] w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+                className={`w-full object-cover ${index === 0 ? 'aspect-[4/5] md:aspect-square' : 'aspect-[3/4]'}`}
               />
             </div>
           ))}

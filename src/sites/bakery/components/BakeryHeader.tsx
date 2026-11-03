@@ -1,9 +1,11 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Menu, X } from 'lucide-react'
-import { bakery } from '../config'
+import { useBakery } from '../content'
 import { Button } from './Button'
 
 export function BakeryHeader() {
+  const bakery = useBakery()
+  const { c, t } = bakery
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -26,17 +28,17 @@ export function BakeryHeader() {
         <div className="bakery-container flex h-[4.25rem] items-center justify-between gap-3 md:h-[4.75rem] lg:h-[5.25rem]">
           <a
             href="#inicio"
-            className="display text-[1.45rem] leading-none text-bakery-ink sm:text-[1.7rem] md:text-[1.85rem] lg:text-[2.15rem]"
+            className="display text-[1.45rem] leading-none tracking-[0.06em] text-bakery sm:text-[1.7rem] md:text-[1.85rem] lg:text-[2.15rem]"
           >
             {bakery.name}
           </a>
 
-          <nav aria-label="Navegación principal" className="hidden items-center gap-6 lg:flex xl:gap-10">
+          <nav aria-label={t.mainNav} className="hidden items-center gap-7 lg:flex xl:gap-10">
             {bakery.nav.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-bakery-ink-soft hover:text-bakery lg:text-base"
+                className="text-[0.75rem] tracking-[0.16em] text-bakery-ink-soft uppercase hover:text-bakery"
               >
                 {link.label}
               </a>
@@ -45,12 +47,12 @@ export function BakeryHeader() {
 
           <div className="flex items-center gap-2">
             <Button href="#encargar" className="px-3.5 text-sm sm:px-5 lg:min-h-12 lg:px-6 lg:text-base">
-              Encargar
+              {c.order}
             </Button>
             <button
               type="button"
               className="inline-flex min-h-11 min-w-11 items-center justify-center text-bakery-ink hover:text-bakery lg:hidden"
-              aria-label="Abrir menú de navegación"
+              aria-label={t.openMenu}
               aria-expanded={open}
               aria-controls="bakery-mobile-menu"
               onClick={() => setOpen(true)}
@@ -72,6 +74,8 @@ function BakeryMobileMenu({
   open: boolean
   onClose: () => void
 }) {
+  const bakery = useBakery()
+  const { c, t } = bakery
   const titleId = useId()
   const closeRef = useRef<HTMLButtonElement>(null)
 
@@ -98,7 +102,7 @@ function BakeryMobileMenu({
       <button
         type="button"
         className="absolute inset-0 bg-bakery-ink/40"
-        aria-label="Cerrar menú"
+        aria-label={t.closeMenu}
         onClick={onClose}
       />
       <div
@@ -114,12 +118,12 @@ function BakeryMobileMenu({
             type="button"
             onClick={onClose}
             className="inline-flex min-h-11 min-w-11 items-center justify-center"
-            aria-label="Cerrar menú de navegación"
+            aria-label={t.closeMenuNav}
           >
             <X aria-hidden size={22} />
           </button>
         </div>
-        <nav aria-label="Navegación móvil" className="flex flex-col">
+        <nav aria-label={t.mobileNav} className="flex flex-col">
           {bakery.nav.map((link) => (
             <a
               key={link.href}
@@ -132,8 +136,8 @@ function BakeryMobileMenu({
           ))}
         </nav>
         <div className="mt-auto pt-8">
-          <Button href={`tel:${bakery.phone.tel}`} className="w-full" onClick={onClose}>
-            Encargar
+          <Button href="#encargar" className="w-full" onClick={onClose}>
+            {c.order}
           </Button>
         </div>
       </div>

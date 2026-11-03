@@ -1,12 +1,6 @@
-export type Lang = 'es' | 'en' | 'ca' | 'gl' | 'eu'
+import type { Lang } from './langs'
 
-export const languages: { id: Lang; label: string }[] = [
-  { id: 'es', label: 'Español' },
-  { id: 'en', label: 'English' },
-  { id: 'ca', label: 'Català' },
-  { id: 'gl', label: 'Galego' },
-  { id: 'eu', label: 'Euskara' },
-]
+export { languages, type Lang } from './langs'
 
 export type LottaCopy = {
   metaTitle: string
@@ -42,7 +36,6 @@ export type LottaCopy = {
   servicesTitle: string
   servicesIntro: string
   services: { title: string; body: string; points: string[] }[]
-  pricesNote: string
   examplesIndex: string
   examplesTitle: string
   examplesIntro: string
@@ -139,9 +132,9 @@ export const copy: Record<Lang, LottaCopy> = {
       },
     ],
     servicesIndex: '03 — Servicios',
-    servicesTitle: 'Tres paquetes. Un precio claro.',
+    servicesTitle: 'Tres paquetes. El mismo criterio.',
     servicesIntro:
-      'Para comercios que necesitan una web profesional y no una plataforma compleja. El precio es por proyecto y antes de impuestos.',
+      'Para comercios que necesitan una web profesional y no una plataforma compleja.',
     services: [
       {
         title: 'Presencia en internet, sin una web compleja.',
@@ -180,8 +173,6 @@ export const copy: Record<Lang, LottaCopy> = {
         ],
       },
     ],
-    pricesNote:
-      'Precios orientativos. Las reservas avanzadas, las citas automáticas, los pagos online y las integraciones se presupuestan aparte.',
     examplesIndex: '04 — Ejemplos',
     examplesTitle: 'Cuatro oficios. El mismo recorrido.',
     examplesIntro:
@@ -293,9 +284,9 @@ export const copy: Record<Lang, LottaCopy> = {
       },
     ],
     servicesIndex: '03 — Services',
-    servicesTitle: 'Three packages. One clear price.',
+    servicesTitle: 'Three packages. The same standard.',
     servicesIntro:
-      'For shops that need a professional website and not a complex platform. The price is per project and before tax.',
+      'For shops that need a professional website and not a complex platform.',
     services: [
       {
         title: 'A presence on the internet, without a complex website.',
@@ -334,8 +325,6 @@ export const copy: Record<Lang, LottaCopy> = {
         ],
       },
     ],
-    pricesNote:
-      'Guide prices. Advanced bookings, automated appointments, online payments and integrations are quoted separately.',
     examplesIndex: '04 — Examples',
     examplesTitle: 'Four trades. The same path.',
     examplesIntro:
@@ -447,9 +436,9 @@ export const copy: Record<Lang, LottaCopy> = {
       },
     ],
     servicesIndex: '03 — Serveis',
-    servicesTitle: 'Tres paquets. Un preu clar.',
+    servicesTitle: 'Tres paquets. El mateix criteri.',
     servicesIntro:
-      'Per a comerços que necessiten una web professional i no una plataforma complexa. El preu és per projecte i abans d’impostos.',
+      'Per a comerços que necessiten una web professional i no una plataforma complexa.',
     services: [
       {
         title: 'Presència a internet, sense una web complexa.',
@@ -488,8 +477,6 @@ export const copy: Record<Lang, LottaCopy> = {
         ],
       },
     ],
-    pricesNote:
-      'Preus orientatius. Les reserves avançades, les cites automàtiques, els pagaments en línia i les integracions es pressuposten a part.',
     examplesIndex: '04 — Exemples',
     examplesTitle: 'Quatre oficis. El mateix recorregut.',
     examplesIntro:
@@ -601,9 +588,9 @@ export const copy: Record<Lang, LottaCopy> = {
       },
     ],
     servicesIndex: '03 — Servizos',
-    servicesTitle: 'Tres paquetes. Un prezo claro.',
+    servicesTitle: 'Tres paquetes. O mesmo criterio.',
     servicesIntro:
-      'Para comercios que necesitan unha web profesional e non unha plataforma complexa. O prezo é por proxecto e antes de impostos.',
+      'Para comercios que necesitan unha web profesional e non unha plataforma complexa.',
     services: [
       {
         title: 'Presenza en internet, sen unha web complexa.',
@@ -642,8 +629,6 @@ export const copy: Record<Lang, LottaCopy> = {
         ],
       },
     ],
-    pricesNote:
-      'Prezos orientativos. As reservas avanzadas, as citas automáticas, os pagamentos en liña e as integracións orzaméntanse á parte.',
     examplesIndex: '04 — Exemplos',
     examplesTitle: 'Catro oficios. O mesmo percorrido.',
     examplesIntro:
@@ -755,9 +740,9 @@ export const copy: Record<Lang, LottaCopy> = {
       },
     ],
     servicesIndex: '03 — Zerbitzuak',
-    servicesTitle: 'Hiru pakete. Prezio argi bat.',
+    servicesTitle: 'Hiru pakete. Irizpide bera.',
     servicesIntro:
-      'Web profesional bat behar duten saltokientzat, plataforma konplexu bat ez. Prezioa proiektuko da eta zergarik gabe.',
+      'Web profesional bat behar duten saltokientzat, plataforma konplexu bat ez.',
     services: [
       {
         title: 'Interneteko presentzia, web konplexurik gabe.',
@@ -796,8 +781,6 @@ export const copy: Record<Lang, LottaCopy> = {
         ],
       },
     ],
-    pricesNote:
-      'Prezio orientagarriak. Erreserba aurreratuak, hitzordu automatikoak, online ordainketak eta integrazioak aparte aurrekontatzen dira.',
     examplesIndex: '04 — Adibideak',
     examplesTitle: 'Lau ofizio. Ibilbide bera.',
     examplesIntro:
@@ -833,14 +816,4 @@ export const copy: Record<Lang, LottaCopy> = {
       'Valentziako estudio digitala. Enpresa bat webean nola irakurtzen den aztertzen du eta, beharrezkoa bada, orria egiten du uler dadin eta idatz dezaten.',
     knowsAbout: ['Web auditoria', 'Esperientziaren diseinua', 'Web orrien sorrera'],
   },
-}
-
-export function readLang(): Lang {
-  try {
-    const saved = localStorage.getItem('lotta-lang')
-    if (saved === 'es' || saved === 'en' || saved === 'ca' || saved === 'gl' || saved === 'eu') return saved
-  } catch {
-    /* storage unavailable */
-  }
-  return 'es'
 }

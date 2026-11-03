@@ -1,52 +1,16 @@
-import { useMemo, useState, type KeyboardEvent } from 'react'
-import { menuCategories, menuItems } from '../data/menu'
-import type { MenuCategoryId } from '../types'
+import { useState, type KeyboardEvent } from 'react'
+import { useRestaurant, type MenuCategoryId } from '../content'
 import { MenuItem } from './MenuItem'
 import { SectionHeading } from './ui/SectionHeading'
 import { useInView } from '../../../hooks/useInView'
 
-const categoryImagery: Record<
-  MenuCategoryId,
-  { src: string; alt: string }
-> = {
-  compartir: {
-    src: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1000&q=80&auto=format&fit=crop',
-    alt: 'Platos para compartir en la mesa',
-  },
-  entrantes: {
-    src: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=1000&q=80&auto=format&fit=crop',
-    alt: 'Entrante fresco de temporada',
-  },
-  principales: {
-    src: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=1000&q=80&auto=format&fit=crop',
-    alt: 'Plato principal emplatado',
-  },
-  arroces: {
-    src: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=1000&q=80&auto=format&fit=crop',
-    alt: 'Arroz mediterráneo en cazuela',
-  },
-  postres: {
-    src: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=1000&q=80&auto=format&fit=crop',
-    alt: 'Postre artesanal',
-  },
-  bebidas: {
-    src: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1000&q=80&auto=format&fit=crop',
-    alt: 'Copa de vino en la mesa',
-  },
-}
-
 export function MenuSection() {
+  const { c, categories, menu } = useRestaurant()
   const [active, setActive] = useState<MenuCategoryId>('compartir')
   const { ref, visible } = useInView<HTMLElement>()
 
-  const items = useMemo(
-    () => menuItems.filter((item) => item.category === active),
-    [active],
-  )
-
-  const activeLabel =
-    menuCategories.find((category) => category.id === active)?.label ?? ''
-  const imagery = categoryImagery[active]
+  const items = menu.filter((item) => item.category === active)
+  const activeCategory = categories.find((category) => category.id === active) ?? categories[0]
 
   const selectCategory = (id: MenuCategoryId) => {
     setActive(id)
@@ -55,21 +19,16 @@ export function MenuSection() {
     })
   }
 
-  const onTabKeyDown = (
-    event: KeyboardEvent<HTMLButtonElement>,
-    index: number,
-  ) => {
+  const onTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
     if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return
     event.preventDefault()
-
-    const last = menuCategories.length - 1
+    const last = categories.length - 1
     let next = index
     if (event.key === 'ArrowRight') next = index === last ? 0 : index + 1
     if (event.key === 'ArrowLeft') next = index === 0 ? last : index - 1
     if (event.key === 'Home') next = 0
     if (event.key === 'End') next = last
-
-    selectCategory(menuCategories[next].id)
+    selectCategory(categories[next].id)
   }
 
   return (
@@ -77,7 +36,7 @@ export function MenuSection() {
       id="menu"
       ref={ref}
       aria-labelledby="menu-heading"
-      className="section-pad bg-cream-deep/50"
+      className="section-pad bg-cream-deep/60"
     >
       <div
         className={`container-page transition-all duration-700 ${
@@ -85,18 +44,18 @@ export function MenuSection() {
         }`}
       >
         <SectionHeading
-          eyebrow="Carta"
-          title="Menú"
-          description="Producto de temporada, cocina mediterránea y platos pensados para compartir."
+          eyebrow={c.menu.eyebrow}
+          title={c.menu.title}
+          description={c.menu.description}
           id="menu-heading"
         />
 
         <div
           role="tablist"
-          aria-label="Categorías del menú"
-          className="-mx-4 mt-8 flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:thin] md:mx-0 md:flex-wrap md:justify-center md:overflow-visible md:px-0 lg:mt-10"
+          aria-label={c.menu.tabs}
+          className="-mx-4 mt-10 flex gap-0 overflow-x-auto px-4 [scrollbar-width:thin] md:mx-0 md:flex-wrap md:justify-center md:overflow-visible md:px-0 lg:mt-14"
         >
-          {menuCategories.map((category, index) => {
+          {categories.map((category, index) => {
             const selected = category.id === active
             return (
               <button
@@ -109,10 +68,10 @@ export function MenuSection() {
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setActive(category.id)}
                 onKeyDown={(event) => onTabKeyDown(event, index)}
-                className={`min-h-11 shrink-0 rounded-sm border px-4 text-sm transition-colors lg:min-h-12 lg:px-5 lg:text-base ${
+                className={`min-h-11 shrink-0 border-b-2 px-4 text-[0.72rem] tracking-[0.16em] uppercase transition-colors lg:min-h-12 lg:px-5 ${
                   selected
-                    ? 'border-olive bg-olive text-white'
-                    : 'border-line bg-cream text-ink-soft hover:border-olive/50 hover:text-olive'
+                    ? 'border-olive text-olive'
+                    : 'border-transparent text-muted hover:text-ink'
                 }`}
               >
                 {category.label}
@@ -121,34 +80,31 @@ export function MenuSection() {
           })}
         </div>
 
-        <div className="mt-10 grid items-start gap-10 lg:mt-14 lg:grid-cols-12 lg:gap-14 xl:gap-20">
+        <div className="mt-12 grid items-start gap-12 lg:mt-16 lg:grid-cols-12 lg:gap-16 xl:gap-24">
           <div
             id="menu-panel"
             role="tabpanel"
             aria-labelledby={`menu-tab-${active}`}
-            className="border-t border-line pt-6 lg:col-span-7 lg:pt-8"
+            className="lg:col-span-7"
           >
-            <h3 className="sr-only">{activeLabel}</h3>
+            <h3 className="display mb-6 text-3xl italic text-ink lg:text-4xl">{activeCategory.label}</h3>
             {items.map((item) => (
               <MenuItem key={item.id} item={item} />
             ))}
           </div>
 
           <aside className="hidden lg:col-span-5 lg:block">
-            <div className="sticky top-28 overflow-hidden">
+            <div className="sticky top-28">
               <img
                 key={active}
-                src={imagery.src}
-                alt={imagery.alt}
+                src={activeCategory.src}
+                alt={activeCategory.alt}
                 width={1000}
                 height={1250}
                 loading="lazy"
                 decoding="async"
                 className="aspect-[4/5] w-full object-cover animate-[fade-up_0.55s_ease_both]"
               />
-              <p className="mt-4 text-sm tracking-[0.12em] text-muted uppercase">
-                {activeLabel}
-              </p>
             </div>
           </aside>
         </div>

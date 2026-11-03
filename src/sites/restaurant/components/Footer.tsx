@@ -1,4 +1,5 @@
-import { restaurant } from '../config/restaurant'
+import { DemoCredits } from '../../shared/DemoCredits'
+import { useRestaurant } from '../content'
 
 function InstagramIcon({ size = 18 }: { size?: number }) {
   return (
@@ -25,25 +26,25 @@ function InstagramIcon({ size = 18 }: { size?: number }) {
 }
 
 export function Footer() {
-  const { address, hours, name, phone, shortName, social, footerLinks, legalLinks } =
-    restaurant
+  const { address, c, footerLinks, hours, instagram, lang, legalLinks, name, phone, shortName, t } =
+    useRestaurant()
   const fullAddress = `${address.street}, ${address.postalCode} ${address.city}`
-  const openDays = hours.filter((h) => h.hours !== 'Cerrado')
 
   return (
-    <footer className="border-t border-line bg-ink text-white">
-      <div className="container-page grid gap-10 py-14 md:grid-cols-12 md:gap-8 md:py-16">
+    <footer className="bg-ink text-white">
+      <div className="container-page grid gap-12 py-16 md:grid-cols-12 md:gap-10 md:py-20">
         <div className="md:col-span-4">
-          <p className="display text-2xl tracking-[0.08em]">{shortName}</p>
+          <p className="display text-3xl tracking-[0.14em]">{shortName}</p>
+          <div className="rest-rule mt-5 bg-olive-gold" aria-hidden="true" />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/70">
-            {restaurant.description}
+            {c.description}
           </p>
           <a
-            href={social.instagram}
+            href={instagram}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm text-white/80 transition-colors hover:text-white"
-            aria-label="Instagram de Casa Oliva (se abre en una pestaña nueva)"
+            aria-label={t.instagram(name)}
           >
             <InstagramIcon />
             Instagram
@@ -52,7 +53,7 @@ export function Footer() {
 
         <div className="md:col-span-3">
           <p className="text-xs font-medium uppercase tracking-[0.16em] text-white/50">
-            Explorar
+            {t.explore}
           </p>
           <ul className="mt-4 space-y-2">
             {footerLinks.map((link) => (
@@ -70,7 +71,7 @@ export function Footer() {
 
         <div className="md:col-span-5">
           <p className="text-xs font-medium uppercase tracking-[0.16em] text-white/50">
-            Información
+            {t.info}
           </p>
           <address className="mt-4 space-y-3 text-sm not-italic text-white/75">
             <p>
@@ -84,22 +85,19 @@ export function Footer() {
               </a>
             </p>
             <ul className="space-y-1">
-              {openDays.map((row) => (
+              {hours.map((row) => (
                 <li key={row.days}>
                   {row.days}: {row.hours}
                 </li>
               ))}
-              <li>Lunes: Cerrado</li>
             </ul>
           </address>
         </div>
       </div>
 
       <div className="border-t border-white/10">
-        <div className="container-page flex flex-col gap-4 py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} {name}. Demo comercial.
-          </p>
+        <div className="container-page flex flex-col gap-4 py-6 text-xs text-white/50 sm:flex-row sm:items-start sm:justify-between">
+          <DemoCredits page="restaurant" lang={lang} name={name} linkClassName="hover:text-white/80" activeClassName="text-white/80" />
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
             {legalLinks.map((link) => (
               <li key={link.href}>

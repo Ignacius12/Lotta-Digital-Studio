@@ -1,49 +1,48 @@
-import { restaurant } from '../config/restaurant'
+import { localPlace } from '../../../schema'
+import { openingHoursSpecification } from '../../shared/demo'
+import { useRestaurant } from '../content'
 
 export function JsonLd() {
-  const { name, address, phone, cuisine, hours, seo } = restaurant
+  const { address, c, categories, email, lang, menu, name, ogImage, phone, schemaHours } =
+    useRestaurant()
 
-  const openingHoursSpecification = hours
-    .filter((h) => h.hours !== 'Cerrado')
-    .flatMap((row) => {
-      const dayMap: Record<string, string[]> = {
-        'Martes – Jueves': ['Tuesday', 'Wednesday', 'Thursday'],
-        'Viernes – Sábado': ['Friday', 'Saturday'],
-        Domingo: ['Sunday'],
-      }
-      const days = dayMap[row.days] ?? []
-      const [opens, closes] = row.hours.split('–').map((part) => part.trim())
-      return days.map((day) => ({
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: day,
-        opens: opens?.replace('.', ':'),
-        closes: closes === '00:00' ? '00:00' : closes?.replace('.', ':'),
-      }))
-    })
-
-  const data = {
-    '@context': 'https://schema.org',
-    '@type': 'Restaurant',
+  const data = localPlace({
+    type: 'Restaurant',
+    lang,
+    page: 'restaurant',
     name,
-    image: seo.ogImage,
-    url: seo.canonical,
+    description: c.description,
+    image: ogImage,
     telephone: phone.tel,
-    servesCuisine: cuisine,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: address.street,
-      addressLocality: address.city,
-      postalCode: address.postalCode,
-      addressRegion: address.region,
-      addressCountry: address.country,
+    email,
+    address,
+    hours: openingHoursSpecification(schemaHours),
+    priceRange: '€€',
+    extra: {
+      servesCuisine: c.cuisine,
+      acceptsReservations: true,
+      hasMenu: {
+        '@type': 'Menu',
+        name: c.menu.title,
+        hasMenuSection: categories.map((category) => ({
+          '@type': 'MenuSection',
+          name: category.label,
+          hasMenuItem: menu
+            .filter((item) => item.category === category.id)
+            .map((item) => ({
+              '@type': 'MenuItem',
+              name: item.name,
+              description: item.description,
+              offers: {
+                '@type': 'Offer',
+                price: item.price,
+                priceCurrency: 'EUR',
+              },
+            })),
+        })),
+      },
     },
-    openingHoursSpecification,
-  }
+  })
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  )
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
 }

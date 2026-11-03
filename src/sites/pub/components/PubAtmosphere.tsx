@@ -1,8 +1,9 @@
-import { pub } from '../config'
+import { usePub } from '../content'
 import { useInView } from '../../../hooks/useInView'
 
 export function PubAtmosphere() {
-  const { atmosphere, gallery } = pub
+  const { c, gallery } = usePub()
+  const { atmosphere } = c
   const { ref, visible } = useInView<HTMLElement>()
   const moodImage = gallery[0]
 
@@ -19,7 +20,7 @@ export function PubAtmosphere() {
         }`}
       >
         <div className="mx-auto max-w-2xl text-left lg:max-w-4xl lg:text-center">
-          <p className="pub-eyebrow lg:text-sm">El ambiente</p>
+          <p className="pub-eyebrow lg:text-sm">{atmosphere.eyebrow}</p>
           <h2
             id="atmosphere-heading"
             className="mt-3 font-sans text-[2rem] font-bold leading-tight text-pub-cream md:text-[2.5rem] lg:mt-4 lg:text-[3.5rem] xl:text-[4rem]"
@@ -44,13 +45,13 @@ export function PubAtmosphere() {
             />
           </div>
           <ul className="md:col-span-6 lg:col-span-5 lg:pt-4">
-            {atmosphere.points.map((point) => (
+            {atmosphere.points.map((point, index) => (
               <li
                 key={point}
                 className="border-t border-pub-line py-4 text-lg text-pub-cream first:border-t-0 first:pt-0 md:first:border-t md:first:pt-4 lg:py-5 lg:text-xl"
               >
-                <span className="mr-3 text-pub" aria-hidden>
-                  ◆
+                <span className="mr-3 text-[0.7rem] font-semibold tracking-[0.18em] text-pub uppercase" aria-hidden>
+                  {String(index + 1).padStart(2, '0')}
                 </span>
                 {point}
               </li>

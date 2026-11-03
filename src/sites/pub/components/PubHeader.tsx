@@ -1,9 +1,11 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Menu, X } from 'lucide-react'
-import { pub } from '../config'
+import { usePub } from '../content'
 import { Button } from './Button'
 
 export function PubHeader() {
+  const pub = usePub()
+  const { c, t } = pub
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -17,10 +19,10 @@ export function PubHeader() {
   return (
     <>
       <header
-        className={`sticky top-0 z-40 border-b transition-colors duration-300 ${
+        className={`fixed inset-x-0 top-0 z-40 border-b transition-colors duration-300 ${
           scrolled
             ? 'border-pub-line bg-pub-bg/95 backdrop-blur-md'
-            : 'border-transparent bg-pub-bg/80 backdrop-blur-sm'
+            : 'border-transparent bg-transparent'
         }`}
       >
         <div className="pub-container flex h-[4.25rem] items-center justify-between gap-3 md:h-[4.75rem] lg:h-[5.25rem]">
@@ -31,12 +33,12 @@ export function PubHeader() {
             {pub.name}
           </a>
 
-          <nav aria-label="Navegación principal" className="hidden items-center gap-8 lg:flex xl:gap-10">
+          <nav aria-label={t.mainNav} className="hidden items-center gap-8 lg:flex xl:gap-10">
             {pub.nav.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-pub-muted hover:text-pub lg:text-base"
+                className="text-[0.75rem] font-medium tracking-[0.16em] text-pub-cream/75 uppercase hover:text-pub"
               >
                 {link.label}
               </a>
@@ -45,12 +47,12 @@ export function PubHeader() {
 
           <div className="flex items-center gap-2">
             <Button href="#reservas" className="px-3.5 text-sm sm:px-5 lg:min-h-12 lg:px-6 lg:text-base">
-              Reservar
+              {c.book}
             </Button>
             <button
               type="button"
               className="inline-flex min-h-11 min-w-11 items-center justify-center text-pub-cream hover:text-pub lg:hidden"
-              aria-label="Abrir menú de navegación"
+              aria-label={t.openMenu}
               aria-expanded={open}
               aria-controls="pub-mobile-menu"
               onClick={() => setOpen(true)}
@@ -72,6 +74,8 @@ function PubMobileMenu({
   open: boolean
   onClose: () => void
 }) {
+  const pub = usePub()
+  const { c, t } = pub
   const titleId = useId()
   const closeRef = useRef<HTMLButtonElement>(null)
 
@@ -98,7 +102,7 @@ function PubMobileMenu({
       <button
         type="button"
         className="absolute inset-0 bg-black/60"
-        aria-label="Cerrar menú"
+        aria-label={t.closeMenu}
         onClick={onClose}
       />
       <div
@@ -114,12 +118,12 @@ function PubMobileMenu({
             type="button"
             onClick={onClose}
             className="inline-flex min-h-11 min-w-11 items-center justify-center text-pub-cream"
-            aria-label="Cerrar menú de navegación"
+            aria-label={t.closeMenuNav}
           >
             <X aria-hidden size={22} />
           </button>
         </div>
-        <nav aria-label="Navegación móvil" className="flex flex-col">
+        <nav aria-label={t.mobileNav} className="flex flex-col">
           {pub.nav.map((link) => (
             <a
               key={link.href}
@@ -132,8 +136,8 @@ function PubMobileMenu({
           ))}
         </nav>
         <div className="mt-auto pt-8">
-          <Button href={`tel:${pub.phone.tel}`} className="w-full" onClick={onClose}>
-            Reservar
+          <Button href="#reservas" className="w-full" onClick={onClose}>
+            {c.book}
           </Button>
         </div>
       </div>

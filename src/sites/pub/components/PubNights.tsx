@@ -1,7 +1,9 @@
-import { pub } from '../config'
+import { usePub } from '../content'
 import { useInView } from '../../../hooks/useInView'
 
 export function PubNights() {
+  const pub = usePub()
+  const copy = pub.c.nights
   const { ref, visible } = useInView<HTMLElement>()
 
   return (
@@ -16,30 +18,30 @@ export function PubNights() {
           visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
         }`}
       >
-        <div className="mx-auto max-w-2xl text-left lg:max-w-4xl lg:text-center">
-          <p className="pub-eyebrow lg:text-sm">Esta semana</p>
+        <div className="max-w-2xl">
+          <p className="pub-eyebrow">{copy.eyebrow}</p>
           <h2
             id="nights-heading"
-            className="mt-3 font-sans text-[2rem] font-bold text-pub-cream md:text-[2.5rem] lg:mt-4 lg:text-[3.5rem] xl:text-[4rem]"
+            className="mt-4 font-sans text-[2rem] font-bold text-pub-cream md:text-[2.5rem] lg:text-[3.5rem]"
           >
-            Motivos para venir.
+            {copy.title}
           </h2>
         </div>
-        <ul className="mt-10 grid gap-4 md:grid-cols-3 lg:mt-14 lg:gap-6">
+        <ul className="mt-10 divide-y divide-pub-line border-y border-pub-line lg:mt-14">
           {pub.nights.map((night) => (
             <li
               key={night.id}
-              className="border border-pub-line bg-pub-panel p-6 transition-colors hover:border-pub/50 lg:p-8"
+              className="grid gap-3 py-7 md:grid-cols-[8rem_1fr] md:items-baseline md:gap-10 lg:py-9"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pub lg:text-sm">
+              <p className="text-[0.7rem] font-semibold tracking-[0.2em] text-pub uppercase">
                 {night.day}
               </p>
-              <h3 className="mt-3 text-xl font-bold text-pub-cream lg:text-2xl">
-                {night.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-pub-muted lg:text-base">
-                {night.description}
-              </p>
+              <div>
+                <h3 className="text-xl font-bold text-pub-cream lg:text-2xl">{night.title}</h3>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-pub-muted lg:text-base">
+                  {night.description}
+                </p>
+              </div>
             </li>
           ))}
         </ul>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import type { Lang } from '../../i18n/langs'
 import { BakeryAbout } from './components/BakeryAbout'
 import { BakeryFooter } from './components/BakeryFooter'
 import { BakeryGallery } from './components/BakeryGallery'
@@ -11,32 +11,32 @@ import { BakeryOrder } from './components/BakeryOrder'
 import { BakeryProducts } from './components/BakeryProducts'
 import { BakerySpecialties } from './components/BakerySpecialties'
 import { BakeryTrust } from './components/BakeryTrust'
-import { bakery } from './config'
+import { BakeryContext, getBakery } from './content'
 
-export function BakeryApp() {
-  useEffect(() => {
-    document.title = bakery.seo.title
-  }, [])
+export function BakeryApp({ lang }: { lang: Lang }) {
+  const bakery = getBakery(lang)
 
   return (
-    <div className="theme-bakery min-h-svh bg-bakery-flour text-bakery-ink">
-      <BakeryJsonLd />
-      <a href="#panes" className="skip-link skip-link-bakery">
-        Saltar a panes del día
-      </a>
-      <BakeryHeader />
-      <main>
-        <BakeryHero />
-        <BakeryTrust />
-        <BakeryAbout />
-        <BakeryProducts />
-        <BakerySpecialties />
-        <BakeryGallery />
-        <BakeryOrder />
-        <BakeryLocation />
-        <BakeryLegal />
-      </main>
-      <BakeryFooter />
-    </div>
+    <BakeryContext.Provider value={bakery}>
+      <div className="theme-bakery min-h-svh bg-bakery-flour text-bakery-ink">
+        <BakeryJsonLd />
+        <a href="#panes" className="skip-link skip-link-bakery">
+          {bakery.c.skip}
+        </a>
+        <BakeryHeader />
+        <main>
+          <BakeryHero />
+          <BakeryTrust />
+          <BakeryAbout />
+          <BakeryProducts />
+          <BakerySpecialties />
+          <BakeryGallery />
+          <BakeryOrder />
+          <BakeryLocation />
+          <BakeryLegal />
+        </main>
+        <BakeryFooter />
+      </div>
+    </BakeryContext.Provider>
   )
 }

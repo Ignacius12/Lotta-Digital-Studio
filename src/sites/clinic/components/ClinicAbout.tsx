@@ -1,23 +1,9 @@
-import { clinic } from '../config'
+import { useClinic } from '../content'
 import { useInView } from '../../../hooks/useInView'
 
-const aboutBlocks = [
-  {
-    heading: 'Escucha primero',
-    body: 'Sabemos que ir al dentista no siempre es fácil. Por eso empezamos escuchando, explicamos sin tecnicismos y avanzamos a tu ritmo.',
-  },
-  {
-    heading: 'Entorno calmado',
-    body: 'Protocolos actuales, materiales de calidad y un entorno luminoso pensado para bajar la tensión desde que entras.',
-  },
-  {
-    heading: 'Claridad en cada visita',
-    body: 'En cada visita priorizamos claridad: tiempos, opciones y cuidados que puedes entender antes de decidir.',
-  },
-] as const
-
 export function ClinicAbout() {
-  const { about } = clinic
+  const { aboutImage, c } = useClinic()
+  const { about } = c
   const { ref, visible } = useInView<HTMLElement>()
 
   return (
@@ -25,53 +11,42 @@ export function ClinicAbout() {
       id="clinica"
       ref={ref}
       aria-labelledby="clinic-about-heading"
-      className="clinic-section bg-clinic-ice"
+      className="clinic-section bg-clinic-mint"
     >
       <div
-        className={`clinic-container transition-all duration-700 ${
+        className={`clinic-container grid items-center gap-12 transition-all duration-700 lg:grid-cols-12 lg:gap-20 ${
           visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
         }`}
       >
-        <div className="mx-auto max-w-2xl text-left lg:max-w-4xl lg:text-center">
-          <p className="clinic-eyebrow">La clínica</p>
+        <div className="lg:col-span-6">
+          <p className="clinic-eyebrow">{about.eyebrow}</p>
           <h2
             id="clinic-about-heading"
-            className="display mt-3 text-[2rem] text-clinic-ink md:text-[2.6rem] lg:mt-4 lg:text-[3.5rem] xl:text-[4rem]"
+            className="mt-4 max-w-[16ch] font-sans text-[2rem] font-medium tracking-tight text-clinic-ink md:text-[2.75rem] lg:text-[3.25rem]"
           >
             {about.title}
           </h2>
+          <ul className="mt-10 space-y-8">
+            {about.blocks.map((block) => (
+              <li key={block.heading}>
+                <h3 className="font-sans text-lg font-medium text-clinic-ink">{block.heading}</h3>
+                <p className="mt-2 max-w-xl text-base leading-relaxed text-clinic-ink-soft lg:text-lg">
+                  {block.body}
+                </p>
+              </li>
+            ))}
+          </ul>
         </div>
-
-        <div className="mt-10 grid items-center gap-10 md:mt-14 md:grid-cols-12 md:gap-14 lg:mt-12 lg:items-stretch lg:gap-16">
-          <div className="flex flex-col justify-center md:col-span-7 md:order-1 lg:py-2">
-            <div className="space-y-5 text-lg leading-relaxed text-clinic-ink-soft md:text-xl lg:hidden">
-              {about.body.map((p) => (
-                <p key={p.slice(0, 28)}>{p}</p>
-              ))}
-            </div>
-            <div className="hidden lg:flex lg:flex-col lg:justify-center lg:gap-9 xl:gap-11">
-              {aboutBlocks.map((block) => (
-                <div key={block.heading}>
-                  <h3 className="text-[0.8rem] font-medium uppercase tracking-[0.16em] text-clinic xl:text-[0.85rem]">
-                    {block.heading}
-                  </h3>
-                  <p className="mt-2.5 max-w-xl text-xl leading-relaxed text-clinic-ink-soft xl:text-[1.35rem] xl:leading-relaxed">
-                    {block.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="md:col-span-5 md:order-2">
+        <div className="lg:col-span-6">
+          <div className="bg-white p-2 sm:p-3 lg:p-4">
             <img
-              src={about.image.src}
-              alt={about.image.alt}
-              width={about.image.width}
-              height={about.image.height}
+              src={aboutImage.src}
+              alt={about.imageAlt}
+              width={aboutImage.width}
+              height={aboutImage.height}
               loading="lazy"
               decoding="async"
-              className="aspect-[4/5] w-full object-cover transition-transform duration-700 hover:scale-[1.02] lg:aspect-square"
+              className="aspect-[4/5] w-full object-cover"
             />
           </div>
         </div>

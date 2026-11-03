@@ -1,11 +1,12 @@
 import { Phone } from 'lucide-react'
-import { restaurant } from '../config/restaurant'
+import { useRestaurant } from '../content'
 import { Button } from './ui/Button'
 import { SectionHeading } from './ui/SectionHeading'
+import { unsplashSrcSet } from '../../shared/demo'
 import { useInView } from '../../../hooks/useInView'
 
 export function Reservations() {
-  const { phone } = restaurant
+  const { c, phone, reservationsImage } = useRestaurant()
   const { ref, visible } = useInView<HTMLElement>()
 
   return (
@@ -13,55 +14,49 @@ export function Reservations() {
       id="reservas"
       ref={ref}
       aria-labelledby="reservas-heading"
-      className="section-pad bg-cream-deep/50"
+      className="relative isolate overflow-hidden bg-olive"
     >
+      <img
+        src={reservationsImage}
+        srcSet={unsplashSrcSet(reservationsImage)}
+        sizes="100vw"
+        alt=""
+        width={1200}
+        height={900}
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover opacity-25"
+        aria-hidden="true"
+      />
+      <div className="absolute inset-0 bg-olive/80" aria-hidden="true" />
+
       <div
-        className={`container-page grid items-center gap-10 transition-all duration-700 lg:grid-cols-12 lg:gap-16 ${
+        className={`container-page relative section-pad max-w-3xl text-center transition-all duration-700 ${
           visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
         }`}
       >
-        <div className="lg:col-span-6 xl:col-span-5">
-          <SectionHeading
-            eyebrow="Reservas"
-            title="Reserva tu mesa"
-            description="Llama y te confirmamos disponibilidad al momento. Atención de martes a domingo en horario de servicio."
-            id="reservas-heading"
-            align="left"
-          />
+        <SectionHeading
+          eyebrow={c.reservations.eyebrow}
+          title={c.reservations.title}
+          description={c.reservations.description}
+          id="reservas-heading"
+          light
+        />
 
-          <div className="mt-8 border-t border-line pt-8 lg:mt-10 lg:pt-10">
-            <p className="text-sm font-medium text-ink lg:text-base">
-              ¿Quieres reservar?
-            </p>
-            <a
-              href={`tel:${phone.tel}`}
-              className="mt-3 inline-flex min-h-12 items-center text-3xl text-olive transition-colors hover:text-olive-deep md:text-4xl lg:mt-4 lg:text-5xl"
-            >
-              {phone.display}
-            </a>
-            <div className="mt-6 lg:mt-8">
-              <Button
-                href={`tel:${phone.tel}`}
-                size="lg"
-                className="gap-2 lg:min-h-14 lg:px-8 lg:text-base"
-              >
-                <Phone size={18} aria-hidden="true" />
-                Llamar para reservar
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <div className="lg:col-span-6 xl:col-span-7">
-          <img
-            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80&auto=format&fit=crop"
-            alt="Comedor de Casa Oliva con mesas preparadas"
-            width={1200}
-            height={900}
-            loading="lazy"
-            decoding="async"
-            className="aspect-[4/3] w-full object-cover lg:aspect-[5/4] lg:min-h-[28rem]"
-          />
+        <p className="mt-10 text-[0.7rem] font-medium tracking-[0.22em] text-olive-gold uppercase">
+          {c.reservations.question}
+        </p>
+        <a
+          href={`tel:${phone.tel}`}
+          className="display mt-4 inline-flex min-h-12 items-center text-4xl text-white transition-colors hover:text-olive-gold md:text-5xl lg:text-6xl"
+        >
+          {phone.display}
+        </a>
+        <div className="mt-8 flex justify-center">
+          <Button href={`tel:${phone.tel}`} variant="inverse" size="lg" className="gap-2">
+            <Phone size={16} aria-hidden="true" />
+            {c.reservations.call}
+          </Button>
         </div>
       </div>
     </section>

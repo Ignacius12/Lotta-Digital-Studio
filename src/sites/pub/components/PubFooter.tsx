@@ -1,19 +1,21 @@
-import { pub } from '../config'
+import { DemoCredits } from '../../shared/DemoCredits'
+import { usePub } from '../content'
 
 export function PubFooter() {
-  const { address, hours, name, phone, footerLinks, legalLinks } = pub
+  const { address, c, footerLinks, hours, lang, legalLinks, name, phone, t } = usePub()
   const fullAddress = `${address.street}, ${address.postalCode} ${address.city}`
 
   return (
     <footer className="border-t border-pub-line bg-pub-wood text-pub-cream">
       <div className="pub-container grid gap-10 py-14 md:grid-cols-12 md:gap-8 md:py-16">
         <div className="md:col-span-4">
-          <p className="text-2xl font-bold">{name}</p>
-          <p className="mt-4 max-w-sm text-sm leading-relaxed text-pub-muted">{pub.description}</p>
+          <p className="text-2xl font-bold tracking-tight">{name}</p>
+          <div className="mt-4 h-px w-16 bg-pub" aria-hidden />
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-pub-muted">{c.description}</p>
         </div>
         <div className="md:col-span-3">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pub-muted/80">
-            Explorar
+            {t.explore}
           </p>
           <ul className="mt-4 space-y-2">
             {footerLinks.map((link) => (
@@ -30,7 +32,7 @@ export function PubFooter() {
         </div>
         <div className="md:col-span-5">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pub-muted/80">
-            Información
+            {t.info}
           </p>
           <address className="mt-4 space-y-3 text-sm not-italic text-pub-muted">
             <p>
@@ -55,9 +57,7 @@ export function PubFooter() {
       </div>
       <div className="border-t border-pub-line">
         <div className="pub-container flex flex-col gap-4 py-6 text-xs text-pub-muted/70 sm:flex-row sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} {name}. Demo comercial.
-          </p>
+          <DemoCredits page="pub" lang={lang} name={name} linkClassName="hover:text-pub-cream" activeClassName="text-pub-cream" />
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
             {legalLinks.map((link) => (
               <li key={link.href}>

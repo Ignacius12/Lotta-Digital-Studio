@@ -1,48 +1,49 @@
-import { pub } from '../config'
+import { localPlace } from '../../../schema'
+import { openingHoursSpecification } from '../../shared/demo'
+import { usePub } from '../content'
 
 export function PubJsonLd() {
-  const { name, address, phone, hours, seo } = pub
+  const { address, bites, c, drinks, lang, name, ogImage, phone, schemaHours } = usePub()
 
-  const openingHoursSpecification = hours
-    .filter((h) => h.hours !== 'Cerrado')
-    .flatMap((row) => {
-      const dayMap: Record<string, string[]> = {
-        'Martes – Jueves': ['Tuesday', 'Wednesday', 'Thursday'],
-        'Viernes – Sábado': ['Friday', 'Saturday'],
-        Domingo: ['Sunday'],
-      }
-      const days = dayMap[row.days] ?? []
-      const [opens, closes] = row.hours.split('–').map((p) => p.trim())
-      return days.map((day) => ({
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: day,
-        opens,
-        closes,
-      }))
-    })
-
-  const data = {
-    '@context': 'https://schema.org',
-    '@type': 'BarOrPub',
+  const data = localPlace({
+    type: 'BarOrPub',
+    lang,
+    page: 'pub',
     name,
-    image: seo.ogImage,
-    url: seo.canonical,
+    description: c.description,
+    image: ogImage,
     telephone: phone.tel,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: address.street,
-      addressLocality: address.city,
-      postalCode: address.postalCode,
-      addressRegion: address.region,
-      addressCountry: address.country,
+    address,
+    hours: openingHoursSpecification(schemaHours),
+    priceRange: '€',
+    extra: {
+      servesCuisine: 'Tapas',
+      acceptsReservations: true,
+      hasMenu: {
+        '@type': 'Menu',
+        hasMenuSection: [
+          {
+            '@type': 'MenuSection',
+            name: c.menu.drinks,
+            hasMenuItem: drinks.map((item) => ({
+              '@type': 'MenuItem',
+              name: item.name,
+              description: item.description,
+            })),
+          },
+          {
+            '@type': 'MenuSection',
+            name: c.menu.bites,
+            hasMenuItem: bites.map((item) => ({
+              '@type': 'MenuItem',
+              name: item.name,
+              description: item.description,
+            })),
+          },
+        ],
+      },
     },
-    openingHoursSpecification,
-  }
+  })
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  )
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
 }

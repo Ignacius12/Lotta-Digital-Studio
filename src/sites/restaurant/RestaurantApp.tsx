@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import type { Lang } from '../../i18n/langs'
 import { About } from './components/About'
 import { Footer } from './components/Footer'
 import { Gallery } from './components/Gallery'
@@ -10,31 +10,31 @@ import { Location } from './components/Location'
 import { MenuSection } from './components/MenuSection'
 import { Reservations } from './components/Reservations'
 import { TrustBar } from './components/TrustBar'
-import { restaurant } from './config/restaurant'
+import { getRestaurant, RestaurantContext } from './content'
 
-export function RestaurantApp() {
-  useEffect(() => {
-    document.title = restaurant.seo.title
-  }, [])
+export function RestaurantApp({ lang }: { lang: Lang }) {
+  const restaurant = getRestaurant(lang)
 
   return (
-    <div className="theme-restaurant min-h-svh bg-cream text-ink">
-      <JsonLd />
-      <a href="#menu" className="skip-link">
-        Saltar al menú
-      </a>
-      <Header />
-      <main id="contenido-principal">
-        <Hero />
-        <TrustBar />
-        <About />
-        <MenuSection />
-        <Gallery />
-        <Reservations />
-        <Location />
-        <LegalNotes />
-      </main>
-      <Footer />
-    </div>
+    <RestaurantContext.Provider value={restaurant}>
+      <div className="theme-restaurant min-h-svh bg-cream text-ink">
+        <JsonLd />
+        <a href="#menu" className="skip-link">
+          {restaurant.c.skip}
+        </a>
+        <Header />
+        <main id="contenido-principal">
+          <Hero />
+          <TrustBar />
+          <About />
+          <MenuSection />
+          <Gallery />
+          <Reservations />
+          <Location />
+          <LegalNotes />
+        </main>
+        <Footer />
+      </div>
+    </RestaurantContext.Provider>
   )
 }

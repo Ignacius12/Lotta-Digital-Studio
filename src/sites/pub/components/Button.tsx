@@ -19,7 +19,7 @@ type ButtonAsLink = CommonProps &
 type ButtonProps = ButtonAsButton | ButtonAsLink
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-none font-semibold tracking-wide transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-55 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3'
+  'inline-flex items-center justify-center gap-2 rounded-none text-[0.75rem] font-semibold tracking-[0.18em] uppercase transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-55 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3'
 
 const sizes: Record<Size, string> = {
   md: 'min-h-11 px-5 text-sm',

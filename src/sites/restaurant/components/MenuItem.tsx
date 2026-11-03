@@ -1,22 +1,22 @@
-import { formatPrice } from '../data/menu'
-import type { MenuItem as MenuItemType } from '../types'
+import { formatEuro } from '../../shared/demo'
+import { useRestaurant, type Restaurant } from '../content'
 
 interface MenuItemProps {
-  item: MenuItemType
+  item: Restaurant['menu'][number]
 }
 
 export function MenuItem({ item }: MenuItemProps) {
+  const { lang } = useRestaurant()
   return (
-    <article className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 border-b border-line/80 py-5 first:pt-0 last:border-b-0 lg:gap-x-6 lg:py-6">
-      <h3 className="text-[1.05rem] font-medium text-ink md:text-[1.12rem] lg:text-[1.2rem]">
-        {item.name}
-      </h3>
-      <p className="text-right text-[1.05rem] font-medium tabular-nums text-olive md:text-[1.12rem] lg:text-[1.2rem]">
-        {formatPrice(item.price)}
-      </p>
-      <p className="col-span-2 max-w-xl text-sm leading-relaxed text-muted lg:text-base">
-        {item.description}
-      </p>
+    <article className="py-5 first:pt-0 lg:py-6">
+      <div className="flex items-baseline gap-1">
+        <h3 className="display text-[1.35rem] leading-none text-ink md:text-[1.5rem]">{item.name}</h3>
+        <span className="rest-leader" aria-hidden="true" />
+        <p className="shrink-0 text-sm tabular-nums tracking-wide text-olive md:text-base">
+          {formatEuro(item.price, lang)}
+        </p>
+      </div>
+      <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted lg:text-[0.95rem]">{item.description}</p>
     </article>
   )
 }

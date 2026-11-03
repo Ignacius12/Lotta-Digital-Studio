@@ -1,30 +1,34 @@
 import { useEffect, useId, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { bakery } from '../config'
+import { useBakery } from '../content'
 import { useInView } from '../../../hooks/useInView'
 
 const AUTO_MS = 4500
 
 export function BakeryProducts() {
-  const products = bakery.products
+  const bakery = useBakery()
+  const { products } = bakery
+  const copy = bakery.c.products
   const labelId = useId()
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
+  const [stopped, setStopped] = useState(false)
   const active = products[index]
   const { ref, visible } = useInView<HTMLElement>()
 
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduceMotion || paused || products.length < 2) return
+    if (reduceMotion || paused || stopped || products.length < 2) return
 
     const timer = window.setInterval(() => {
       setIndex((current) => (current + 1) % products.length)
     }, AUTO_MS)
 
     return () => window.clearInterval(timer)
-  }, [paused, products.length])
+  }, [paused, stopped, products.length])
 
   const goTo = (next: number) => {
+    setStopped(true)
     setIndex((next + products.length) % products.length)
   }
 
@@ -41,16 +45,15 @@ export function BakeryProducts() {
         }`}
       >
         <div className="mx-auto max-w-2xl text-center lg:max-w-4xl">
-          <p className="bakery-eyebrow">Hoy en el mostrador</p>
+          <p className="bakery-eyebrow">{copy.eyebrow}</p>
           <h2
             id="products-heading"
             className="display mt-3 text-[2rem] text-bakery-ink md:text-[2.6rem] lg:mt-4 lg:text-[3.5rem] xl:text-[4rem]"
           >
-            Panes y bollería del día
+            {copy.title}
           </h2>
           <p className="mt-4 text-bakery-muted lg:mx-auto lg:mt-5 lg:max-w-2xl lg:text-lg">
-            Disponibilidad según hornada. Si buscas algo concreto, llámanos antes
-            de venir.
+            {copy.description}
           </p>
         </div>
 
@@ -68,22 +71,22 @@ export function BakeryProducts() {
           <div className="lg:col-span-7 xl:col-span-8">
             <div
               role="group"
-              aria-roledescription="carrusel"
+              aria-roledescription={copy.carousel}
               aria-labelledby={labelId}
-              className="overflow-hidden border border-bakery-line bg-bakery-flour"
+              className="overflow-hidden bg-bakery-flour"
             >
               <p id={labelId} className="sr-only">
-                Producto {index + 1} de {products.length}: {active.name}
+                {copy.slide(index + 1, products.length, active.name)}
               </p>
 
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-bakery-paper md:aspect-[16/10] lg:aspect-[16/11]">
                 {products.map((item, i) => (
                   <img
                     key={item.id}
-                    src={item.image.src}
-                    alt={item.image.alt}
-                    width={item.image.width}
-                    height={item.image.height}
+                    src={item.src}
+                    alt={item.alt}
+                    width={1000}
+                    height={750}
                     loading={i === 0 ? 'eager' : 'lazy'}
                     decoding="async"
                     className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
@@ -113,15 +116,15 @@ export function BakeryProducts() {
                 type="button"
                 onClick={() => goTo(index - 1)}
                 className="inline-flex min-h-11 min-w-11 items-center justify-center border border-bakery-line text-bakery-ink hover:border-bakery hover:text-bakery"
-                aria-label="Producto anterior"
+                aria-label={copy.prev}
               >
                 <ChevronLeft aria-hidden size={20} />
               </button>
 
               <div
-                className="flex flex-wrap items-center justify-center gap-2"
+                className="flex flex-wrap items-center justify-center"
                 role="tablist"
-                aria-label="Productos del mostrador"
+                aria-label={copy.dots}
               >
                 {products.map((item, i) => (
                   <button
@@ -129,12 +132,17 @@ export function BakeryProducts() {
                     type="button"
                     role="tab"
                     aria-selected={i === index}
-                    aria-label={`Ver ${item.name}`}
+                    aria-label={copy.see(item.name)}
                     onClick={() => goTo(i)}
-                    className={`h-2.5 w-2.5 rounded-none transition-colors ${
-                      i === index ? 'bg-bakery' : 'bg-bakery-line hover:bg-bakery/50'
-                    }`}
-                  />
+                    className="group inline-flex h-6 w-6 items-center justify-center"
+                  >
+                    <span
+                      aria-hidden
+                      className={`h-2.5 w-2.5 rounded-none transition-colors ${
+                        i === index ? 'bg-bakery' : 'bg-bakery-line group-hover:bg-bakery/50'
+                      }`}
+                    />
+                  </button>
                 ))}
               </div>
 
@@ -142,7 +150,7 @@ export function BakeryProducts() {
                 type="button"
                 onClick={() => goTo(index + 1)}
                 className="inline-flex min-h-11 min-w-11 items-center justify-center border border-bakery-line text-bakery-ink hover:border-bakery hover:text-bakery"
-                aria-label="Producto siguiente"
+                aria-label={copy.next}
               >
                 <ChevronRight aria-hidden size={20} />
               </button>
@@ -151,7 +159,7 @@ export function BakeryProducts() {
 
           <aside className="hidden lg:col-span-5 lg:block xl:col-span-4">
             <p className="text-sm font-medium uppercase tracking-[0.14em] text-bakery">
-              Del día
+              {copy.side}
             </p>
             <ul className="mt-4 divide-y divide-bakery-line border-y border-bakery-line">
               {products.map((item, i) => {
@@ -188,7 +196,7 @@ export function BakeryProducts() {
                 type="button"
                 onClick={() => goTo(index - 1)}
                 className="inline-flex min-h-11 min-w-11 items-center justify-center border border-bakery-line text-bakery-ink hover:border-bakery hover:text-bakery"
-                aria-label="Producto anterior"
+                aria-label={copy.prev}
               >
                 <ChevronLeft aria-hidden size={20} />
               </button>
@@ -196,7 +204,7 @@ export function BakeryProducts() {
                 type="button"
                 onClick={() => goTo(index + 1)}
                 className="inline-flex min-h-11 min-w-11 items-center justify-center border border-bakery-line text-bakery-ink hover:border-bakery hover:text-bakery"
-                aria-label="Producto siguiente"
+                aria-label={copy.next}
               >
                 <ChevronRight aria-hidden size={20} />
               </button>

@@ -1,64 +1,39 @@
 import { Phone } from 'lucide-react'
-import { pub } from '../config'
+import { usePub } from '../content'
 import { Button } from './Button'
 import { useInView } from '../../../hooks/useInView'
 
 export function PubReservations() {
+  const pub = usePub()
+  const copy = pub.c.reservations
   const { ref, visible } = useInView<HTMLElement>()
-  const nightImage = pub.gallery[2] ?? pub.gallery[0]
 
   return (
-    <section
-      id="reservas"
-      ref={ref}
-      aria-labelledby="pub-reservas-heading"
-      className="pub-section bg-pub-panel"
-    >
+    <section id="reservas" ref={ref} aria-labelledby="pub-reservas-heading" className="bg-pub">
       <div
-        className={`pub-container grid items-center gap-10 transition-all duration-700 lg:grid-cols-12 lg:gap-16 ${
+        className={`pub-container pub-section max-w-3xl text-center text-pub-bg transition-all duration-700 ${
           visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
         }`}
       >
-        <div className="border-l-4 border-pub pl-6 lg:col-span-6 lg:pl-8 xl:col-span-5">
-          <p className="pub-eyebrow lg:text-sm">Grupos y mesas</p>
-          <h2
-            id="pub-reservas-heading"
-            className="mt-3 font-sans text-[2rem] font-bold text-pub-cream md:text-[2.5rem] lg:mt-4 lg:text-[3.5rem] xl:text-[4rem]"
-          >
-            ¿Venís en grupo?
-          </h2>
-          <p className="mt-4 text-pub-muted lg:mt-6 lg:max-w-xl lg:text-xl">
-            Para mesas de 6 o más, llama y te guardamos sitio. El resto: ven
-            cuando quieras; si hay hueco, hay caña.
-          </p>
-          <a
-            href={`tel:${pub.phone.tel}`}
-            className="mt-8 inline-flex min-h-12 items-center text-3xl font-bold text-pub hover:text-pub-deep md:text-4xl lg:mt-10 lg:text-5xl"
-          >
-            {pub.phone.display}
-          </a>
-          <div className="mt-6 lg:mt-8">
-            <Button
-              href={`tel:${pub.phone.tel}`}
-              size="lg"
-              className="gap-2 lg:min-h-14 lg:px-8 lg:text-base"
-            >
-              <Phone size={18} aria-hidden />
-              Llamar al pub
-            </Button>
-          </div>
-        </div>
-
-        <div className="lg:col-span-6 xl:col-span-7">
-          <img
-            src={nightImage.src}
-            alt={nightImage.alt}
-            width={nightImage.width}
-            height={nightImage.height}
-            loading="lazy"
-            decoding="async"
-            className="aspect-[4/3] w-full object-cover lg:aspect-[5/4] lg:min-h-[28rem]"
-          />
+        <p className="text-[0.7rem] font-semibold tracking-[0.22em] uppercase">{copy.eyebrow}</p>
+        <h2
+          id="pub-reservas-heading"
+          className="mt-4 font-sans text-[2.15rem] font-bold md:text-[3rem] lg:text-[3.5rem]"
+        >
+          {copy.title}
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-pub-bg/80 lg:text-lg">{copy.description}</p>
+        <a
+          href={`tel:${pub.phone.tel}`}
+          className="mt-8 inline-flex min-h-12 items-center font-sans text-4xl font-bold md:text-5xl"
+        >
+          {pub.phone.display}
+        </a>
+        <div className="mt-8 flex justify-center">
+          <Button href={`tel:${pub.phone.tel}`} variant="secondary" size="lg" className="gap-2 border-pub-bg text-pub-bg hover:bg-pub-bg hover:text-pub">
+            <Phone size={16} aria-hidden />
+            {copy.call}
+          </Button>
         </div>
       </div>
     </section>

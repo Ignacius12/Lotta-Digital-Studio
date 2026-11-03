@@ -1,7 +1,9 @@
-import { clinic } from '../config'
+import { useClinic } from '../content'
 import { useInView } from '../../../hooks/useInView'
 
 export function ClinicTreatments() {
+  const clinic = useClinic()
+  const { treatments } = clinic.c
   const { ref, visible } = useInView<HTMLElement>()
 
   return (
@@ -16,47 +18,45 @@ export function ClinicTreatments() {
           visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
         }`}
       >
-        <div className="mx-auto max-w-2xl text-left lg:max-w-4xl lg:text-center">
-          <p className="clinic-eyebrow">Cuidados</p>
+        <div className="max-w-2xl">
+          <p className="clinic-eyebrow">{treatments.eyebrow}</p>
           <h2
             id="treatments-heading"
-            className="display mt-3 text-[2rem] text-clinic-ink md:text-[2.6rem] lg:mt-4 lg:text-[3.5rem] xl:text-[4rem]"
+            className="mt-4 font-sans text-[2rem] font-medium tracking-tight text-clinic-ink md:text-[2.75rem] lg:text-[3.25rem]"
           >
-            Tratamientos claros, sin complicaciones.
+            {treatments.title}
           </h2>
-          <p className="mt-4 text-clinic-muted lg:mx-auto lg:mt-5 lg:max-w-2xl lg:text-lg">
-            Información sencilla para decidir con tranquilidad. Cada servicio se
-            explica en consulta, con tiempos y opciones comprensibles.
-          </p>
+          <p className="mt-4 text-clinic-muted lg:text-lg">{treatments.description}</p>
         </div>
 
-        <div className="mt-10 overflow-hidden lg:mt-14">
-          <img
-            src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1400&q=80&auto=format&fit=crop"
-            alt="Espacio de consulta luminoso y calmado"
-            width={1400}
-            height={700}
-            loading="lazy"
-            decoding="async"
-            className="aspect-[21/9] w-full object-cover"
-          />
+        <div className="mt-12 grid gap-12 lg:mt-16 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <img
+              src={clinic.treatmentsImage}
+              alt={treatments.imageAlt}
+              width={1400}
+              height={700}
+              loading="lazy"
+              decoding="async"
+              className="aspect-[4/5] w-full object-cover lg:sticky lg:top-28 lg:aspect-[4/5]"
+            />
+          </div>
+          <ol className="divide-y divide-clinic-line border-y border-clinic-line lg:col-span-7">
+            {clinic.treatments.map((item, index) => (
+              <li key={item.id} className="grid grid-cols-[auto_1fr] gap-5 py-6 lg:gap-8 lg:py-8">
+                <span className="font-sans text-sm font-medium text-clinic">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <div>
+                  <h3 className="font-sans text-xl font-medium tracking-tight text-clinic-ink lg:text-2xl">
+                    {item.name}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-clinic-muted lg:text-base">{item.description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
-
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:mt-10 lg:grid-cols-3 lg:gap-6">
-          {clinic.treatments.map((item) => (
-            <li
-              key={item.id}
-              className="border border-clinic-line bg-clinic-ice/70 px-5 py-6 transition-colors hover:border-clinic/40 lg:px-6 lg:py-8"
-            >
-              <h3 className="display text-[1.35rem] leading-tight text-clinic-ink md:text-[1.45rem] lg:text-[1.65rem] xl:text-[1.75rem]">
-                {item.name}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-clinic-muted lg:mt-3.5 lg:text-base">
-                {item.description}
-              </p>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   )

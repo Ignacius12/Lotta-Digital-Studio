@@ -1,10 +1,10 @@
 import { MapPin, Navigation } from 'lucide-react'
-import { pub } from '../config'
+import { usePub } from '../content'
 import { Button } from './Button'
 import { useInView } from '../../../hooks/useInView'
 
 export function PubLocation() {
-  const { address, hours, name, phone } = pub
+  const { address, c, hours, name, phone, t } = usePub()
   const fullAddress = `${address.street}, ${address.postalCode} ${address.city}`
   const { ref, visible } = useInView<HTMLElement>()
 
@@ -21,7 +21,7 @@ export function PubLocation() {
         }`}
       >
         <div className="mx-auto max-w-2xl text-left lg:max-w-4xl lg:text-center">
-          <p className="pub-eyebrow lg:text-sm">Dónde</p>
+          <p className="pub-eyebrow lg:text-sm">{c.locationEyebrow}</p>
           <h2
             id="pub-location-heading"
             className="mt-3 font-sans text-[2rem] font-bold text-pub-cream md:text-[2.5rem] lg:mt-4 lg:text-[3.5rem] xl:text-[4rem]"
@@ -32,20 +32,25 @@ export function PubLocation() {
 
         <div className="mt-10 grid gap-10 md:mt-14 md:grid-cols-12 md:gap-14 lg:gap-20">
           <div className="md:col-span-5">
-            <p className="flex items-start gap-2 text-pub-muted lg:text-lg">
-              <MapPin
-                size={18}
-                className="mt-1 shrink-0 text-pub"
-                aria-hidden
-              />
-              <span>{fullAddress}</span>
-            </p>
-            <a
-              href={`tel:${phone.tel}`}
-              className="mt-3 inline-flex min-h-11 items-center font-medium text-pub hover:text-pub-deep lg:text-lg"
-            >
-              {phone.display}
-            </a>
+            <address className="not-italic">
+              <p className="font-sans text-[1.65rem] font-bold leading-snug text-pub-cream md:text-[1.9rem]">
+                {fullAddress}
+              </p>
+              <p className="mt-3 flex items-start gap-2 text-pub-muted lg:text-lg">
+                <MapPin
+                  size={18}
+                  className="mt-1 shrink-0 text-pub"
+                  aria-hidden
+                />
+                <span>{name}</span>
+              </p>
+              <a
+                href={`tel:${phone.tel}`}
+                className="mt-3 inline-flex min-h-11 items-center font-medium text-pub hover:text-pub-deep lg:text-lg"
+              >
+                {phone.display}
+              </a>
+            </address>
             <div className="mt-8">
               <Button
                 href={address.mapsUrl}
@@ -55,14 +60,14 @@ export function PubLocation() {
                 className="gap-2 lg:min-h-14 lg:px-8 lg:text-base"
               >
                 <Navigation size={16} aria-hidden />
-                Cómo llegar
+                {t.directions}
               </Button>
             </div>
           </div>
 
           <div className="md:col-span-7">
             <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-pub lg:text-base">
-              Horario
+              {t.hours}
             </h3>
             <dl className="mt-5 divide-y divide-pub-line border-y border-pub-line">
               {hours.map((row) => (

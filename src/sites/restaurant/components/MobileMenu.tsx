@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef } from 'react'
 import { X } from 'lucide-react'
-import { restaurant } from '../config/restaurant'
+import { useRestaurant } from '../content'
 import { Button } from './ui/Button'
 
 interface MobileMenuProps {
@@ -9,6 +9,8 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const restaurant = useRestaurant()
+  const { c, t } = restaurant
   const titleId = useId()
   const closeRef = useRef<HTMLButtonElement>(null)
   const previouslyFocused = useRef<HTMLElement | null>(null)
@@ -64,7 +66,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 md:hidden"
+      className="fixed inset-0 z-50 lg:hidden"
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
@@ -72,13 +74,13 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
       <button
         type="button"
         className="absolute inset-0 bg-ink/45"
-        aria-label="Cerrar menú"
+        aria-label={t.closeMenu}
         onClick={onClose}
       />
 
       <div
         id="mobile-menu-panel"
-        className="absolute inset-y-0 right-0 flex w-[min(100%,20.5rem)] flex-col bg-cream px-6 pb-8 pt-5 shadow-soft"
+        className="absolute inset-y-0 right-0 flex w-[min(100%,22rem)] flex-col bg-cream px-7 pb-8 pt-5"
       >
         <div className="mb-8 flex items-center justify-between">
           <p id={titleId} className="display text-2xl tracking-[0.04em] text-ink">
@@ -89,19 +91,19 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             type="button"
             onClick={onClose}
             className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm text-ink hover:text-olive"
-            aria-label="Cerrar menú de navegación"
+            aria-label={t.closeMenuNav}
           >
             <X aria-hidden="true" size={22} strokeWidth={1.75} />
           </button>
         </div>
 
-        <nav aria-label="Navegación móvil" className="flex flex-col gap-1">
+        <nav aria-label={t.mobileNav} className="flex flex-col gap-1">
           {restaurant.nav.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={onClose}
-              className="min-h-12 border-b border-line py-3 text-lg text-ink-soft transition-colors hover:text-olive"
+              className="display min-h-12 border-b border-line py-3 text-2xl text-ink transition-colors hover:text-olive"
             >
               {link.label}
             </a>
@@ -109,12 +111,8 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
         </nav>
 
         <div className="mt-auto space-y-3 pt-8">
-          <Button
-            href={`tel:${restaurant.phone.tel}`}
-            className="w-full"
-            onClick={onClose}
-          >
-            Reservar mesa
+          <Button href="#reservas" className="w-full" onClick={onClose}>
+            {c.book}
           </Button>
         </div>
       </div>

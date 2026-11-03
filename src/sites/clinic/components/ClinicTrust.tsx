@@ -1,18 +1,17 @@
-import { clinic } from '../config'
+import { useClinic } from '../content'
 
 export function ClinicTrust() {
+  const { c, trust } = useClinic()
   return (
-    <section aria-label="Información de confianza" className="bg-clinic-mint">
-      <div className="clinic-container grid grid-cols-2 gap-6 py-9 md:grid-cols-4 md:gap-6 md:py-11">
-        {clinic.trust.map((item) => (
-          <div key={item.id} className="border-l border-clinic/20 pl-4 md:border-l-0 md:border-t-0 md:pl-0 md:text-center">
-            <p className="font-sans text-2xl font-medium tracking-tight text-clinic md:text-[1.75rem]">
-              {item.value}
-            </p>
-            <p className="mt-1 text-sm text-clinic-ink-soft">{item.label}</p>
-          </div>
+    <section aria-label={c.trustLabel} className="border-y border-clinic-line bg-white">
+      <ul className="clinic-container grid grid-cols-2 gap-8 py-10 md:grid-cols-4 md:gap-6 md:py-14">
+        {trust.map((item) => (
+          <li key={item.label}>
+            <p className="font-sans text-3xl font-medium tracking-tight text-clinic md:text-4xl">{item.value}</p>
+            <p className="mt-2 text-sm text-clinic-ink-soft md:text-base">{item.label}</p>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   )
 }

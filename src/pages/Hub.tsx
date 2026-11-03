@@ -1,11 +1,14 @@
 import { createContext, useContext, useEffect, useRef, useState, type MouseEvent, type ReactNode, type TransitionEvent } from 'react'
 import { createPortal } from 'react-dom'
-import { Link } from 'react-router-dom'
 import { ArrowRight, ArrowUpRight, ChevronDown, Mail, MapPin, Menu, X } from 'lucide-react'
 import logo from '../assets/logo-lotta.png'
 import logoDark from '../assets/logo-lotta-dark.png'
 import { useInView } from '../hooks/useInView'
-import { copy, languages, readLang, type Lang, type LottaCopy } from '../i18n/copy'
+import { copy, languages, type Lang, type LottaCopy } from '../i18n/copy'
+import { rememberLang } from '../i18n/langs'
+import { pathFor, type DemoId } from '../routes'
+import { studioGraph } from '../schema'
+import { unsplashSrcSet } from '../sites/shared/demo'
 
 const mail = 'lotta.digital.studio@gmail.com'
 
@@ -34,30 +37,26 @@ const nightStars = Array.from({ length: 96 }, (_, id) => {
   }
 })
 
-const serviceMeta = [
-  { name: 'Lotta Essential', price: '49 €' },
-  { name: 'Lotta Business', price: '85 €' },
-  { name: 'Lotta Premium', price: '135 €' },
-]
+const serviceMeta = ['Lotta Essential', 'Lotta Business', 'Lotta Premium']
 
-const exampleMeta = [
+const exampleMeta: { page: DemoId; name: string; image: string }[] = [
   {
-    to: '/restaurante',
+    page: 'restaurant',
     name: 'Casa Oliva',
     image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80&auto=format&fit=crop',
   },
   {
-    to: '/clinica',
+    page: 'clinic',
     name: 'Clínica Alba',
     image: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1400&q=80&auto=format&fit=crop',
   },
   {
-    to: '/horno',
+    page: 'bakery',
     name: 'Horno La Espiga',
     image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1400&q=80&auto=format&fit=crop',
   },
   {
-    to: '/pub',
+    page: 'pub',
     name: 'El Candil',
     image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1400&q=80&auto=format&fit=crop',
   },
@@ -65,7 +64,6 @@ const exampleMeta = [
 
 const Language = createContext<{
   lang: Lang
-  setLang: (lang: Lang) => void
   t: LottaCopy
 } | null>(null)
 
@@ -209,7 +207,7 @@ function TalkLink({ className = '' }: { className?: string }) {
 }
 
 function StudioHeader() {
-  const { t, lang, setLang } = useCopy()
+  const { t, lang } = useCopy()
   const [open, setOpen] = useState(false)
   const [hold, setHold] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
@@ -351,17 +349,16 @@ function StudioHeader() {
                   <ul id="idiomas-lotta" className="grid gap-1 pb-4 sm:grid-cols-2 lg:grid-cols-1">
                     {languages.map((item) => (
                       <li key={item.id}>
-                        <button
-                          type="button"
-                          aria-current={lang === item.id ? 'true' : undefined}
-                          className={`px-1 py-2 text-left text-lg ${lang === item.id ? 'font-semibold' : ''}`}
-                          onClick={() => {
-                            setLang(item.id)
-                            close()
-                          }}
+                        <a
+                          href={pathFor('home', item.id)}
+                          hrefLang={item.id}
+                          lang={item.id}
+                          aria-current={lang === item.id ? 'page' : undefined}
+                          className={`inline-block px-1 py-2 text-left text-lg ${lang === item.id ? 'font-semibold' : ''}`}
+                          onClick={() => rememberLang(item.id)}
                         >
                           {item.label}
-                        </button>
+                        </a>
                       </li>
                     ))}
                   </ul>
@@ -549,11 +546,9 @@ function ScrollProgress() {
   )
 }
 
-export function Hub() {
-  const [lang, setLang] = useState<Lang>(readLang)
-
+export function Hub({ lang }: { lang: Lang }) {
   return (
-    <Language.Provider value={{ lang, setLang, t: copy[lang] }}>
+    <Language.Provider value={{ lang, t: copy[lang] }}>
       <HubPage />
     </Language.Provider>
   )
@@ -563,32 +558,15 @@ function HubPage() {
   const { stars, burst } = useStarBurst()
   const { t, lang } = useCopy()
   const mailto = `mailto:${mail}?subject=${encodeURIComponent(t.mailtoSubject)}`
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
-    name: 'Lotta',
-    description: t.jsonDescription,
-    url: 'https://ignacius12.github.io/PruebaWeb/',
+  const jsonLd = studioGraph({
+    lang,
+    title: t.metaTitle,
+    description: t.metaDescription,
+    jsonDescription: t.jsonDescription,
     email: mail,
-    areaServed: 'ES',
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Valencia',
-      addressCountry: 'ES',
-    },
     knowsAbout: t.knowsAbout,
-  }
-
-  useEffect(() => {
-    document.title = t.metaTitle
-    document.documentElement.lang = lang
-    document.querySelector('meta[name="description"]')?.setAttribute('content', t.metaDescription)
-    try {
-      localStorage.setItem('lotta-lang', lang)
-    } catch {
-      /* storage unavailable */
-    }
-  }, [lang, t])
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&auto=format&fit=crop',
+  })
 
   return (
     <Stars.Provider value={burst}>
@@ -675,11 +653,10 @@ function HubPage() {
         >
           <div className="grid gap-4 lg:grid-cols-3">
             {t.services.map((service, index) => (
-              <Reveal key={serviceMeta[index].name} delay={index * 100}>
+              <Reveal key={serviceMeta[index]} delay={index * 100}>
                 <article className="flex h-full flex-col overflow-hidden rounded-none border border-lotta-line bg-white transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgb(8_15_27/0.08)]">
-                  <div className="flex items-end justify-between gap-4 bg-lotta-ink px-6 py-5 text-white sm:px-8">
-                    <p className="font-lotta text-xl font-bold tracking-[0.04em] uppercase sm:text-2xl">{serviceMeta[index].name}</p>
-                    <p className="font-lotta text-3xl font-bold whitespace-nowrap text-lotta-glow">{serviceMeta[index].price}</p>
+                  <div className="bg-lotta-ink px-6 py-5 text-white sm:px-8">
+                    <p className="font-lotta text-xl font-bold tracking-[0.04em] uppercase sm:text-2xl">{serviceMeta[index]}</p>
                   </div>
                   <div className="flex flex-1 flex-col p-6 sm:p-8">
                     <h3 className="font-lotta text-[clamp(1.4rem,1.6vw,1.8rem)] leading-snug font-bold tracking-[-0.015em]">
@@ -699,7 +676,6 @@ function HubPage() {
               </Reveal>
             ))}
           </div>
-          <p className="mt-6 max-w-3xl text-sm text-lotta-muted">{t.pricesNote}</p>
         </Chapter>
 
         <Chapter
@@ -711,14 +687,16 @@ function HubPage() {
         >
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {exampleMeta.map((example, index) => (
-              <Reveal key={example.to} delay={index * 70} className="h-full">
-                <Link
-                  to={example.to}
+              <Reveal key={example.page} delay={index * 70} className="h-full">
+                <a
+                  href={pathFor(example.page, lang)}
                   className="group flex h-full flex-col overflow-hidden rounded-none border border-lotta-line bg-lotta-paper transition duration-300 hover:-translate-y-1.5 hover:border-lotta-signal/40 hover:shadow-[0_20px_50px_rgb(8_15_27/0.1)]"
                 >
                   <span className="relative block overflow-hidden">
                     <img
                       src={example.image}
+                      srcSet={unsplashSrcSet(example.image, [480, 720, 960])}
+                      sizes="(min-width: 1280px) 22vw, (min-width: 640px) 45vw, 100vw"
                       alt={t.examples[index].imageAlt}
                       width={1400}
                       height={933}
@@ -744,7 +722,7 @@ function HubPage() {
                       />
                     </span>
                   </span>
-                </Link>
+                </a>
               </Reveal>
             ))}
           </div>

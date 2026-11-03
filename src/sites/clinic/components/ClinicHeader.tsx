@@ -1,9 +1,11 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Menu, X } from 'lucide-react'
-import { clinic } from '../config'
+import { useClinic } from '../content'
 import { Button } from './Button'
 
 export function ClinicHeader() {
+  const clinic = useClinic()
+  const { c, t } = clinic
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -18,9 +20,7 @@ export function ClinicHeader() {
     <>
       <header
         className={`sticky top-0 z-40 border-b transition-colors duration-300 ${
-          scrolled
-            ? 'border-clinic-line bg-clinic-ice/95 backdrop-blur-md'
-            : 'border-transparent bg-clinic-ice/90 backdrop-blur-sm'
+          scrolled ? 'border-clinic-line bg-white/95 backdrop-blur-md' : 'border-transparent bg-clinic-ice'
         }`}
       >
         <div className="clinic-container flex h-[4.25rem] items-center justify-between gap-3 md:h-[4.75rem] lg:h-[5.25rem]">
@@ -31,7 +31,7 @@ export function ClinicHeader() {
             {clinic.name}
           </a>
 
-          <nav aria-label="Navegación principal" className="hidden items-center gap-6 lg:flex xl:gap-10">
+          <nav aria-label={t.mainNav} className="hidden items-center gap-6 lg:flex xl:gap-10">
             {clinic.nav.map((link) => (
               <a
                 key={link.href}
@@ -43,14 +43,18 @@ export function ClinicHeader() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
-            <Button href="#cita" className="px-3.5 text-sm sm:px-5 lg:min-h-12 lg:px-6 lg:text-base">
-              Pedir cita
-            </Button>
+          <div className="flex items-center gap-4">
+            <a
+              href={`tel:${clinic.phone.tel}`}
+              className="hidden text-sm text-clinic-ink-soft hover:text-clinic lg:inline"
+            >
+              {clinic.phone.display}
+            </a>
+            <Button href="#cita">{c.book}</Button>
             <button
               type="button"
               className="inline-flex min-h-11 min-w-11 items-center justify-center text-clinic-ink hover:text-clinic lg:hidden"
-              aria-label="Abrir menú de navegación"
+              aria-label={t.openMenu}
               aria-expanded={open}
               aria-controls="clinic-mobile-menu"
               onClick={() => setOpen(true)}
@@ -72,6 +76,8 @@ function ClinicMobileMenu({
   open: boolean
   onClose: () => void
 }) {
+  const clinic = useClinic()
+  const { c, t } = clinic
   const titleId = useId()
   const closeRef = useRef<HTMLButtonElement>(null)
 
@@ -95,7 +101,7 @@ function ClinicMobileMenu({
 
   return (
     <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal aria-labelledby={titleId}>
-      <button type="button" className="absolute inset-0 bg-clinic-ink/40" aria-label="Cerrar menú" onClick={onClose} />
+      <button type="button" className="absolute inset-0 bg-clinic-ink/40" aria-label={t.closeMenu} onClick={onClose} />
       <div
         id="clinic-mobile-menu"
         className="absolute inset-y-0 right-0 flex w-[min(100%,20.5rem)] flex-col bg-clinic-ice px-6 pb-8 pt-5"
@@ -109,12 +115,12 @@ function ClinicMobileMenu({
             type="button"
             onClick={onClose}
             className="inline-flex min-h-11 min-w-11 items-center justify-center"
-            aria-label="Cerrar menú de navegación"
+            aria-label={t.closeMenuNav}
           >
             <X aria-hidden size={22} />
           </button>
         </div>
-        <nav aria-label="Navegación móvil" className="flex flex-col">
+        <nav aria-label={t.mobileNav} className="flex flex-col">
           {clinic.nav.map((link) => (
             <a
               key={link.href}
@@ -127,8 +133,8 @@ function ClinicMobileMenu({
           ))}
         </nav>
         <div className="mt-auto pt-8">
-          <Button href={`tel:${clinic.phone.tel}`} className="w-full" onClick={onClose}>
-            Pedir cita
+          <Button href="#cita" className="w-full" onClick={onClose}>
+            {c.book}
           </Button>
         </div>
       </div>

@@ -13,46 +13,47 @@
   --color-lotta-signal: #7c3aed;
   --color-lotta-glow: #c084fc;
 
-  --color-cream: #f5f2eb;
-  --color-cream-deep: #ebe6db;
-  --color-ink: #1a1916;
-  --color-ink-soft: #3d3a34;
-  --color-muted: #6e6a61;
-  --color-olive: #4f5d32;
-  --color-olive-deep: #3d4926;
-  --color-olive-soft: #6a7a45;
+  --color-cream: #f3eee4;
+  --color-cream-deep: #e8e0d2;
+  --color-ink: #1b1712;
+  --color-ink-soft: #3c372f;
+  --color-muted: #6e675c;
+  --color-olive: #3e4a2a;
+  --color-olive-deep: #2d361e;
+  --color-olive-soft: #6a7548;
+  --color-olive-gold: #b89a5a;
   --color-terracotta: #a85a3f;
-  --color-line: #d9d3c6;
+  --color-line: #d6cebf;
   --color-white: #fffcf7;
 
-  --color-clinic: #1f5c63;
-  --color-clinic-deep: #17484e;
-  --color-clinic-ice: #f7faf9;
-  --color-clinic-ink: #152428;
-  --color-clinic-ink-soft: #3d4a4e;
-  --color-clinic-muted: #6a787c;
-  --color-clinic-line: #dce6e4;
-  --color-clinic-mint: #e7f2ef;
+  --color-clinic: #1a6b66;
+  --color-clinic-deep: #145550;
+  --color-clinic-ice: #f4f7f6;
+  --color-clinic-ink: #14302e;
+  --color-clinic-ink-soft: #3d524f;
+  --color-clinic-muted: #6a7c79;
+  --color-clinic-line: #d5e3e0;
+  --color-clinic-mint: #e4f0ee;
 
-  --color-bakery: #6b4226;
-  --color-bakery-deep: #4a2e1a;
-  --color-bakery-flour: #faf6ef;
-  --color-bakery-paper: #f3ece0;
-  --color-bakery-ink: #2a2118;
-  --color-bakery-ink-soft: #4a3f34;
-  --color-bakery-muted: #7a6d5d;
-  --color-bakery-line: #e0d5c4;
-  --color-bakery-wheat: #b08d3e;
+  --color-bakery: #6b3f24;
+  --color-bakery-deep: #4a2a16;
+  --color-bakery-flour: #f7f1e6;
+  --color-bakery-paper: #efe4d2;
+  --color-bakery-ink: #2a1c12;
+  --color-bakery-ink-soft: #4a3a2c;
+  --color-bakery-muted: #7a6a58;
+  --color-bakery-line: #e0d2bc;
+  --color-bakery-wheat: #c4a15a;
 
-  --color-pub: #c9852a;
-  --color-pub-deep: #a66b1c;
-  --color-pub-bg: #14110e;
-  --color-pub-panel: #1f1914;
-  --color-pub-cream: #f3ebd9;
-  --color-pub-ink: #f3ebd9;
-  --color-pub-muted: #b5a68f;
-  --color-pub-line: #3a3128;
-  --color-pub-wood: #2a221c;
+  --color-pub: #d4a017;
+  --color-pub-deep: #b8860b;
+  --color-pub-bg: #100e0c;
+  --color-pub-panel: #1a1612;
+  --color-pub-cream: #f4ead6;
+  --color-pub-ink: #f4ead6;
+  --color-pub-muted: #b7a78d;
+  --color-pub-line: #3a3228;
+  --color-pub-wood: #241e18;
 
   --shadow-soft: 0 12px 40px rgb(26 25 22 / 0.08);
 }
@@ -579,4 +580,17 @@
     transform: translate(var(--dx), var(--dy)) scale(1) rotate(var(--rot));
     opacity: 0;
   }
+}
+
+.theme-restaurant .rest-rule {
+  width: 3.5rem;
+  height: 1px;
+  background: var(--color-olive-gold);
+}
+
+.theme-restaurant .rest-leader {
+  flex: 1 1 auto;
+  min-width: 1.5rem;
+  margin: 0 0.6rem 0.35rem;
+  border-bottom: 1px dotted color-mix(in srgb, var(--color-ink) 28%, transparent);
 }

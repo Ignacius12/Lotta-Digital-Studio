@@ -1,41 +1,33 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { LanguageIndex } from './pages/LanguageIndex'
 import { Hub } from './pages/Hub'
+import { base, matchRoute } from './routes'
+import { applyHead, headFor } from './seo'
 import { BakeryApp } from './sites/bakery/BakeryApp'
 import { ClinicApp } from './sites/clinic/ClinicApp'
 import { PubApp } from './sites/pub/PubApp'
 import { RestaurantApp } from './sites/restaurant/RestaurantApp'
 
-function ScrollToTop() {
-  const { pathname } = useLocation()
+export default function App({ url }: { url: string }) {
+  const route = matchRoute(url)
+
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
-  return null
-}
+    if (!route) return
+    applyHead(headFor(route.page, route.lang))
+  }, [route?.page, route?.lang])
 
-function AppRoutes() {
-  return (
-    <>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Hub />} />
-        <Route path="/restaurante" element={<RestaurantApp />} />
-        <Route path="/clinica" element={<ClinicApp />} />
-        <Route path="/horno" element={<BakeryApp />} />
-        <Route path="/pub" element={<PubApp />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </>
-  )
-}
+  if (!route) return <LanguageIndex notFound={url !== base} />
 
-export default function App() {
-  const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
-
-  return (
-    <BrowserRouter basename={basename === '/' ? undefined : basename}>
-      <AppRoutes />
-    </BrowserRouter>
-  )
+  switch (route.page) {
+    case 'home':
+      return <Hub lang={route.lang} />
+    case 'restaurant':
+      return <RestaurantApp lang={route.lang} />
+    case 'clinic':
+      return <ClinicApp lang={route.lang} />
+    case 'bakery':
+      return <BakeryApp lang={route.lang} />
+    case 'pub':
+      return <PubApp lang={route.lang} />
+  }
 }
